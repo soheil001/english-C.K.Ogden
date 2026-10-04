@@ -5,6 +5,7 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
+    base: '/english-C.K.Ogden/',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
