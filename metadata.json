@@ -1,0 +1,6 @@
+{
+  "name": "cllo",
+  "description": "cllo — پلتفرم آموزش زبان انگلیسی با متد C. K. Ogden",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

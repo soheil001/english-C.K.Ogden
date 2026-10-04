@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>cllo — آموزش زبان انگلیسی با متد C. K. Ogden</title>
+  <meta name="description" content="یادگیری ۱۰۰ لغت بنیادین کلاس اول با روش C. K. Ogden">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f172a;
+      min-height: 100vh;
+      direction: rtl;
+      text-align: right;
+      touch-action: pan-y;
+      -webkit-font-smoothing: antialiased;
+      -webkit-text-size-adjust: 100%;
+    }
+    .font-en {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    /* Prevent auto-zoom in Safari on mobile */
+    input, textarea, select {
+      font-size: 16px !important;
+      direction: auto;
+      text-align: start;
+      touch-action: manipulation;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.15);
+    }
+    .word-slide-enter {
+      animation: slideInRtl 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes slideInRtl {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="flex justify-center items-start min-h-screen text-slate-800 bg-gradient-to-b from-[#0f172a] via-[#1e3a8a] to-[#0f172a]" dir="rtl">
+  
+  <!-- Mobile Container (Max 430px) -->
+  <main id="mainAppContainer" class="w-full max-w-[430px] min-h-screen bg-gradient-to-b from-[#1d4ed8] via-[#2563eb] to-[#1e40af] flex flex-col justify-start relative shadow-2xl sm:border-x sm:border-blue-700/40 pb-12 overflow-x-hidden">
+    
+    <!-- Top Header -->
+    <header class="px-3.5 py-3 flex items-center justify-between glass-card rounded-2xl mx-3 mt-3 border border-white/90 shadow-md relative z-40">
+      <div class="flex items-center gap-2.5 text-right">
+        <div class="flex flex-col items-center justify-center bg-gradient-to-br from-blue-700 to-indigo-900 text-white rounded-xl px-2.5 py-1 shadow-md shadow-blue-700/25 shrink-0">
+          <span class="font-en font-black text-sm tracking-tight text-white leading-none">cllo</span>
+          <span class="text-[8px] font-en text-blue-200 uppercase tracking-widest mt-0.5">ir</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <h1 class="text-sm sm:text-base font-extrabold text-slate-900">کلاس اول: مقدماتی</h1>
+            <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">۱۰۰ لغت</span>
+          </div>
+          <p class="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-0.5">
+            روش C. K. Ogden در <span class="font-en font-bold text-blue-700">cllo</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <!-- Account / Subscription Button -->
+        <button id="authBtn" onclick="openSubscriptionModal()" class="w-10 h-10 rounded-xl bg-white/90 hover:bg-white text-slate-700 border border-slate-200 shadow-xs flex items-center justify-center transition active:scale-95 cursor-pointer relative" title="ورود و وضعیت اشتراک">
+          <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+          <span id="authBadge" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-white"></span>
+        </button>
+
+        <!-- Words List Directory -->
+        <button onclick="toggleWordDirectory()" class="w-10 h-10 rounded-xl bg-white/90 hover:bg-white text-slate-700 border border-slate-200 shadow-xs flex items-center justify-center transition active:scale-95 cursor-pointer" title="فهرست ۱۰۰ لغت">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Today Goal Card -->
+    <div class="px-3 my-2" dir="rtl">
+      <div class="bg-white/95 backdrop-blur-md rounded-2xl p-3 border border-white shadow-md text-right">
+        <div class="flex items-center justify-between gap-3">
+          <!-- Right side: یادگیری امروز (Progress fills to the right) -->
+          <div class="flex-1 border-l border-slate-200/80 pl-3">
+            <div class="flex items-center justify-between text-[11px] mb-1.5">
+              <span class="font-extrabold text-slate-900 flex items-center gap-1">
+                <span>🔥</span>
+                <span>یادگیری امروز</span>
+              </span>
+              <span id="todayProgressText" class="font-en font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md">
+                1 از 10
+              </span>
+            </div>
+            <!-- Active line fills towards the right -->
+            <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200/70 p-0.5 shadow-inner" dir="ltr">
+              <div id="todayProgressBar" class="bg-gradient-to-r from-blue-600 via-indigo-600 to-emerald-500 h-full rounded-full transition-all duration-500 ease-out" style="width: 10%;"></div>
+            </div>
+          </div>
+
+          <!-- Left side: Total learned -->
+          <div class="shrink-0 flex items-center gap-2 pr-1">
+            <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 shadow-xs text-sm">
+              ✓
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-500 font-medium block">لغات یادگرفته‌شده</span>
+              <span class="text-xs font-en font-extrabold text-slate-900">
+                <span id="totalLearnedCount">1</span> <span class="text-[10px] font-normal text-slate-400">/ 100</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Completion prompt for 10 words -->
+        <div id="todayCompletionPrompt" class="hidden mt-2.5 pt-2.5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2 bg-gradient-to-r from-blue-50/90 to-indigo-50/90 p-2.5 rounded-xl border border-blue-100 animate-in fade-in">
+          <div class="flex items-center gap-2 text-right">
+            <span>🎉</span>
+            <p class="text-xs font-bold text-slate-900 leading-snug">
+              تمرین امروز شما تموم شد ۱۰ لغت میخوای ادامه بدی ؟
+            </p>
+          </div>
+          <div class="flex items-center gap-2 self-end sm:self-auto shrink-0">
+            <button onclick="handleContinueToday('yes')" class="px-3.5 py-1.5 rounded-lg bg-blue-700 hover:bg-blue-800 text-white text-xs font-extrabold shadow-sm active:scale-95 transition cursor-pointer">
+              آره
+            </button>
+            <button onclick="handleContinueToday('no')" class="px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold active:scale-95 transition cursor-pointer">
+              نه
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Word Card Slider -->
+    <div class="px-3 mt-1.5 mb-1" dir="ltr">
+      <div id="wordCardElement" style="touch-action: pan-y;" class="bg-white/95 backdrop-blur-md rounded-[32px] p-5 border border-white shadow-xl text-left relative overflow-hidden transition-all duration-300">
+        <div id="wordCardWrapper" class="word-slide-enter">
+          <div class="flex items-start justify-between gap-3">
+            <!-- Text on Left -->
+            <div class="flex-1 text-left">
+              <span id="wordCategoryBadge" class="inline-block px-3 py-1 text-[11px] font-bold text-blue-700 bg-blue-50 rounded-full mb-1 border border-blue-100">
+                فعل حرکتی
+              </span>
+              <div class="flex items-center gap-2">
+                <h2 id="wordTitle" class="text-3xl sm:text-4xl font-black text-slate-900 font-en tracking-tight capitalize">
+                  come
+                </h2>
+                <button onclick="speakCurrentWord()" class="w-8 h-8 rounded-full bg-blue-100 hover:bg-blue-200 text-blue-700 flex items-center justify-center transition active:scale-95 cursor-pointer shadow-xs" title="پخش صوتی">
+                  🔊
+                </button>
+              </div>
+              <div id="wordPhonetic" class="text-sm font-bold text-slate-400 font-en mt-0.5">
+                /kʌm/
+              </div>
+              <div id="wordMeaning" class="text-xl sm:text-2xl font-black text-slate-900 mt-2 text-right" dir="rtl">
+                آمدن
+              </div>
+            </div>
+
+            <!-- Picture / Emoji on Right -->
+            <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-100/70 border border-blue-100 flex items-center justify-center shadow-inner text-4xl shrink-0">
+              <span id="wordEmoji">🚶</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Buttons side-by-side on one row (کلمات کنار هم نه زیر هم) -->
+        <div class="flex items-center justify-between gap-2.5 mt-5 pt-3 border-t border-slate-100" dir="rtl">
+          <!-- Previous Word Button -->
+          <button id="prevWordBtn" onclick="handlePrevWord()" class="flex-1 py-2.5 px-3 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-all shadow-xs active:scale-95 cursor-pointer whitespace-nowrap bg-white hover:bg-slate-50 text-slate-700 border border-slate-200">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+            <span class="whitespace-nowrap">لغت قبلی</span>
+          </button>
+
+          <!-- Index Indicator -->
+          <div class="shrink-0 px-2 py-1 bg-slate-100 rounded-lg text-[11px] font-en font-bold text-slate-500">
+            <span id="currentWordIdxText">1</span> / 100
+          </div>
+
+          <!-- Next Word Button -->
+          <button id="nextWordBtn" onclick="handleNextWord()" class="flex-1 py-2.5 px-3 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer whitespace-nowrap bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 text-white">
+            <span class="whitespace-nowrap">لغت بعدی</span>
+            <svg class="w-4 h-4 shrink-0 rotate-180" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Exercise Card Slider Section -->
+    <div id="practice-section" class="px-3 mt-0.5 mb-6" dir="rtl">
+      <!-- Exercise Tabs Bar -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-1.5 scrollbar-none mb-1.5">
+        <button onclick="selectExerciseTab(0)" id="tab-0" class="flex-1 py-2 px-2 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap text-center bg-white text-blue-700 shadow-md border-b-2 border-blue-600">
+          جمله‌سازی
+        </button>
+        <button onclick="selectExerciseTab(1)" id="tab-1" class="flex-1 py-2 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap text-center bg-white/70 text-slate-600 hover:bg-white">
+          سؤال و جواب
+        </button>
+        <button onclick="selectExerciseTab(2)" id="tab-2" class="flex-1 py-2 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap text-center bg-white/70 text-slate-600 hover:bg-white">
+          داستان
+        </button>
+        <button onclick="selectExerciseTab(3)" id="tab-3" class="flex-1 py-2 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap text-center bg-white/70 text-slate-600 hover:bg-white">
+          مکالمه
+        </button>
+      </div>
+
+      <!-- Exercise Content Box -->
+      <div class="bg-white/95 backdrop-blur-xl rounded-[32px] p-5 sm:p-6 border border-white shadow-2xl shadow-blue-950/20 text-right relative overflow-hidden">
+        
+        <!-- Tab 0: جمله‌سازی -->
+        <div id="exercisePane-0">
+          <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
+            <span class="text-xs font-bold text-blue-700 bg-blue-50 px-3 py-1 rounded-xl border border-blue-100">
+              جمله‌سازی
+            </span>
+            <button onclick="toggleModelAnswer('sentence')" class="text-[11px] text-blue-700 hover:text-blue-800 font-bold bg-slate-50 hover:bg-slate-100 px-2.5 py-1 rounded-xl border border-slate-200">
+              نمونه جمله C. K. Ogden
+            </button>
+          </div>
+
+          <div class="text-right mb-2.5">
+            <h4 class="text-sm sm:text-base font-extrabold text-slate-900">
+              با لغت بالا جمله بساز
+            </h4>
+          </div>
+
+          <!-- Typing Box (placeholder: اینجا بنویس...) -->
+          <div class="relative my-3">
+            <div class="bg-slate-50/90 rounded-2xl p-3.5 border-2 border-blue-200 focus-within:border-blue-600 focus-within:bg-white transition-all shadow-inner">
+              <div class="flex items-center justify-between text-[11px] font-bold text-blue-700 mb-2">
+                <span>اینجا بنویس:</span>
+                <span class="text-[10px] text-slate-400 font-normal">خودکار (فارسی / English)</span>
+              </div>
+              <textarea id="input-sentence" dir="auto" placeholder="اینجا بنویس…" rows="3" class="w-full bg-transparent outline-none text-[16px] text-slate-900 placeholder:text-xs placeholder:text-slate-400 font-medium resize-none leading-relaxed text-start"></textarea>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between mt-3">
+            <button onclick="handleSubmitAnswer('sentence', 0)" class="px-5 py-2.5 bg-blue-700 hover:bg-blue-800 text-white rounded-xl text-xs font-bold shadow-md active:scale-95 transition cursor-pointer">
+              ثبت پاسخ
+            </button>
+            <span id="feedback-sentence" class="hidden text-xs text-emerald-600 font-bold bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-200">
+              ✓ پاسخ شما با موفقیت ثبت شد!
+            </span>
+          </div>
+
+          <div id="model-sentence" class="hidden mt-3 p-3.5 bg-blue-50/80 rounded-2xl border border-blue-200 text-left">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[11px] font-bold text-blue-800" dir="rtl">جمله نمونه:</span>
+              <button onclick="speakSentenceModel()" class="text-xs bg-white text-blue-700 px-2 py-1 rounded-lg shadow-xs">🔊 پخش</button>
+            </div>
+            <p id="modelSentenceEn" class="text-sm font-bold text-slate-900 font-en">Please come here and help me.</p>
+            <p id="modelSentenceFa" class="text-xs text-slate-600 mt-1" dir="rtl">لطفاً بیا اینجا و کمکم کن.</p>
+          </div>
+        </div>
+
+        <!-- Tab 1: سؤال و جواب -->
+        <div id="exercisePane-1" class="hidden">
+          <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
+            <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-3 py-1 rounded-xl border border-indigo-100">
+              سؤال و جواب
+            </span>
+            <button onclick="toggleModelAnswer('qa')" class="text-[11px] text-indigo-700 hover:text-indigo-800 font-bold bg-slate-50 hover:bg-slate-100 px-2.5 py-1 rounded-xl border border-slate-200">
+              نمونه سؤال و جواب
+            </button>
+          </div>
+
+          <div class="text-right mb-2.5">
+            <h4 class="text-sm font-extrabold text-slate-900">
+              سوال بساز با این لغت
+            </h4>
+          </div>
+
+          <div class="space-y-3">
+            <div class="bg-slate-50/90 rounded-2xl p-3 border-2 border-slate-200 focus-within:border-indigo-600 focus-within:bg-white transition-all shadow-inner">
+              <label class="text-[11px] font-bold text-slate-600 block mb-1">سؤال من:</label>
+              <input id="input-q" type="text" dir="auto" placeholder="اینجا بنویس..." class="w-full bg-transparent outline-none text-[16px] text-slate-900 placeholder:text-xs placeholder:text-slate-400 font-medium text-start">
+            </div>
+            <div class="bg-slate-50/90 rounded-2xl p-3 border-2 border-slate-200 focus-within:border-emerald-600 focus-within:bg-white transition-all shadow-inner">
+              <label class="text-[11px] font-bold text-slate-600 block mb-1">جواب من:</label>
+              <input id="input-a" type="text" dir="auto" placeholder="اینجا بنویس..." class="w-full bg-transparent outline-none text-[16px] text-slate-900 placeholder:text-xs placeholder:text-slate-400 font-medium text-start">
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between mt-3">
+            <button onclick="handleSubmitAnswer('qa', 1)" class="px-5 py-2.5 bg-blue-700 hover:bg-blue-800 text-white rounded-xl text-xs font-bold shadow-md active:scale-95 transition cursor-pointer">
+              ثبت سؤال و جواب
+            </button>
+            <span id="feedback-qa" class="hidden text-xs text-emerald-600 font-bold bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-200">
+              ✓ ثبت شد!
+            </span>
+          </div>
+
+          <div id="model-qa" class="hidden mt-3 p-3.5 bg-indigo-50/80 rounded-2xl border border-indigo-200 text-left">
+            <p id="modelQEn" class="text-xs font-bold text-slate-900 font-en">Q: When will you come?</p>
+            <p id="modelQFa" class="text-[11px] text-slate-500" dir="rtl">کی خواهی آمد؟</p>
+            <p id="modelAEn" class="text-xs font-bold text-emerald-800 font-en mt-1">A: I will come at five.</p>
+            <p id="modelAFa" class="text-[11px] text-slate-500" dir="rtl">من ساعت پنج می‌آیم.</p>
+          </div>
+        </div>
+
+        <!-- Tab 2: داستان -->
+        <div id="exercisePane-2" class="hidden">
+          <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
+            <span class="text-xs font-bold text-purple-700 bg-purple-50 px-3 py-1 rounded-xl border border-purple-100">
+              داستان کوتاه
+            </span>
+            <button onclick="toggleModelAnswer('story')" class="text-[11px] text-purple-700 hover:text-purple-800 font-bold bg-slate-50 hover:bg-slate-100 px-2.5 py-1 rounded-xl border border-slate-200">
+              نمونه داستان
+            </button>
+          </div>
+
+          <div class="text-right mb-2.5">
+            <h4 class="text-sm font-extrabold text-slate-900">
+              با لغت بالا داستان کوتاه بساز
+            </h4>
+          </div>
+
+          <div class="bg-slate-50/90 rounded-2xl p-3 border-2 border-slate-200 focus-within:border-purple-600 focus-within:bg-white transition-all shadow-inner my-2">
+            <textarea id="input-story" dir="auto" placeholder="اینجا بنویس..." rows="4" class="w-full bg-transparent outline-none text-[16px] text-slate-900 placeholder:text-xs placeholder:text-slate-400 font-medium resize-none leading-relaxed text-start"></textarea>
+          </div>
+
+          <div class="flex items-center justify-between mt-3">
+            <button onclick="handleSubmitAnswer('story', 2)" class="px-5 py-2.5 bg-blue-700 hover:bg-blue-800 text-white rounded-xl text-xs font-bold shadow-md active:scale-95 transition cursor-pointer">
+              ثبت داستان کوتاه
+            </button>
+            <span id="feedback-story" class="hidden text-xs text-emerald-600 font-bold bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-200">
+              ✓ داستان شما ثبت شد!
+            </span>
+          </div>
+
+          <div id="model-story" class="hidden mt-3 p-3.5 bg-purple-50/80 rounded-2xl border border-purple-200 text-left">
+            <p id="modelStoryEn" class="text-xs font-bold text-slate-900 font-en leading-relaxed"></p>
+            <p id="modelStoryFa" class="text-[11px] text-slate-600 mt-1" dir="rtl"></p>
+          </div>
+        </div>
+
+        <!-- Tab 3: مکالمه -->
+        <div id="exercisePane-3" class="hidden">
+          <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
+            <span class="text-xs font-bold text-teal-700 bg-teal-50 px-3 py-1 rounded-xl border border-teal-100">
+              مکالمه
+            </span>
+            <button onclick="toggleModelAnswer('dialogue')" class="text-[11px] text-teal-700 hover:text-teal-800 font-bold bg-slate-50 hover:bg-slate-100 px-2.5 py-1 rounded-xl border border-slate-200">
+              نمونه مکالمه
+            </button>
+          </div>
+
+          <div class="text-right mb-2.5">
+            <h4 class="text-sm font-extrabold text-slate-900">
+              با لغت بالا مکالمه بساز
+            </h4>
+          </div>
+
+          <div class="space-y-3">
+            <div class="bg-slate-50/90 rounded-2xl p-3 border-2 border-slate-200 focus-within:border-teal-600 focus-within:bg-white transition-all shadow-inner">
+              <label class="text-[11px] font-bold text-slate-600 block mb-1">شخص اول (Person A):</label>
+              <input id="input-diaA" type="text" dir="auto" placeholder="اینجا بنویس..." class="w-full bg-transparent outline-none text-[16px] text-slate-900 placeholder:text-xs placeholder:text-slate-400 font-medium text-start">
+            </div>
+            <div class="bg-slate-50/90 rounded-2xl p-3 border-2 border-slate-200 focus-within:border-teal-600 focus-within:bg-white transition-all shadow-inner">
+              <label class="text-[11px] font-bold text-slate-600 block mb-1">شخص دوم (Person B):</label>
+              <input id="input-diaB" type="text" dir="auto" placeholder="اینجا بنویس..." class="w-full bg-transparent outline-none text-[16px] text-slate-900 placeholder:text-xs placeholder:text-slate-400 font-medium text-start">
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between mt-3">
+            <button onclick="handleSubmitAnswer('dialogue', 3)" class="px-5 py-2.5 bg-blue-700 hover:bg-blue-800 text-white rounded-xl text-xs font-bold shadow-md active:scale-95 transition cursor-pointer">
+              ثبت مکالمه
+            </button>
+            <span id="feedback-dialogue" class="hidden text-xs text-emerald-600 font-bold bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-200">
+              ✓ مکالمه شما ثبت شد!
+            </span>
+          </div>
+
+          <div id="model-dialogue" class="hidden mt-3 p-3.5 bg-teal-50/80 rounded-2xl border border-teal-200 text-left">
+            <p id="modelDiaA" class="text-xs font-bold text-slate-900 font-en"></p>
+            <p id="modelDiaAFa" class="text-[11px] text-slate-500" dir="rtl"></p>
+            <p id="modelDiaB" class="text-xs font-bold text-teal-800 font-en mt-1"></p>
+            <p id="modelDiaBFa" class="text-[11px] text-slate-500" dir="rtl"></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Floating Toast Prompt ("تمرین انجام بده ✍️") -->
+    <div id="practiceToast" class="hidden fixed bottom-6 inset-x-0 mx-auto w-fit z-50 flex items-center gap-2.5 px-5 py-3 rounded-full bg-slate-900/95 text-white backdrop-blur-md border border-white/20 shadow-2xl pointer-events-none">
+      <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
+      <span class="text-xs sm:text-sm font-extrabold text-white">تمرین انجام بده ✍️</span>
+    </div>
+
+    <!-- Glassmorphic Subscription Modal -->
+    <div id="subscriptionModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/65 backdrop-blur-sm">
+      <div class="absolute inset-0" onclick="closeSubscriptionModal()"></div>
+      <div class="relative z-10 w-full max-w-sm bg-white/95 backdrop-blur-2xl rounded-3xl p-6 border border-white shadow-2xl shadow-blue-950/30 text-right" dir="rtl">
+        <button onclick="closeSubscriptionModal()" class="absolute top-4 left-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition cursor-pointer">
+          ✕
+        </button>
+
+        <div id="subModalNotLoggedIn">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-700 to-indigo-800 text-white flex items-center justify-center mx-auto shadow-lg shadow-blue-700/30 mb-3 text-2xl">
+            🔑
+          </div>
+          <div class="text-center mb-4">
+            <h3 class="text-base sm:text-lg font-black text-slate-900">کد اشتراک خودتون رو وارد کنید</h3>
+            <div class="flex items-center justify-center gap-1 mt-1 text-[11px] font-bold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200 w-fit mx-auto">
+              <span>تا ۱۰ لغت اول رایگان است</span>
+            </div>
+            <p id="subModalPromptText" class="text-xs text-slate-500 mt-2.5 leading-relaxed px-1">
+              ۱۰ لغت اول رایگان را تمام کردید! برای باز شدن دسترسی به ادامه ۱۰۰ لغت، لطفاً کد اشتراک ۵ رقمی خود را وارد کنید.
+            </p>
+          </div>
+
+          <form onsubmit="handleCodeSubmit(event)" class="space-y-3.5">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1.5">کد اشتراک ۵ رقمی:</label>
+              <input id="subCodeInput" type="text" inputmode="numeric" dir="ltr" placeholder="مثلاً: 12345" maxlength="15" class="w-full bg-slate-50 border-2 border-slate-200 focus:border-blue-600 focus:bg-white rounded-2xl p-3 text-center text-lg font-en font-black tracking-widest outline-none text-slate-900 transition-all shadow-inner">
+            </div>
+            <div id="subErrorMsg" class="hidden p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-xs font-bold"></div>
+            <div id="subSuccessMsg" class="hidden p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold"></div>
+            <button id="subSubmitBtn" type="submit" class="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 text-white text-xs sm:text-sm font-extrabold shadow-lg shadow-blue-700/30 transition cursor-pointer">
+              فعال‌سازی و ادامه یادگیری
+            </button>
+          </form>
+        </div>
+
+        <div id="subModalLoggedIn" class="hidden text-center py-2 space-y-4">
+          <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-200 text-2xl">
+            🛡️
+          </div>
+          <div>
+            <h3 class="text-base font-black text-slate-900">حساب کاربری فعال</h3>
+            <p class="text-xs text-slate-500 mt-1">اشتراک شما با کد زیر فعال است:</p>
+            <div id="userPhoneDisplay" class="mt-2 inline-block bg-slate-100 px-4 py-1.5 rounded-xl font-en font-extrabold text-blue-700 tracking-wider"></div>
+          </div>
+          <div class="pt-3 border-t border-slate-100 flex items-center gap-2">
+            <button onclick="closeSubscriptionModal()" class="flex-1 py-2.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold transition shadow-md cursor-pointer">
+              ادامه یادگیری
+            </button>
+            <button onclick="handleLogout()" class="py-2.5 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-xs font-bold transition cursor-pointer">
+              خروج
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 100 Words Jump / Directory Modal -->
+    <div id="wordDirectoryModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/65 backdrop-blur-sm">
+      <div class="absolute inset-0" onclick="toggleWordDirectory()"></div>
+      <div class="relative z-10 w-full max-w-sm max-h-[85vh] bg-white rounded-3xl p-5 shadow-2xl flex flex-col text-right" dir="rtl">
+        <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-sm">فهرست ۱۰۰ لغت کلاس اول (Ogden)</h3>
+            <p class="text-[10px] text-slate-400">روی هر کلمه بزنید تا تمرین‌های آن باز شود</p>
+          </div>
+          <button onclick="toggleWordDirectory()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 text-sm">✕</button>
+        </div>
+        <div id="directoryWordsList" class="overflow-y-auto divide-y divide-slate-100 py-2 flex-1"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // Supabase Auth Configuration
+    const SUPABASE_URL = 'https://hjzzvzxhrqovvducnxha.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhqenp2enhocnFvdnZkdWNueGhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NDY0MTksImV4cCI6MjA5NzUyMjQxOX0.XfFimXnkKHFBlYUE-E7daaBNjPJZV-D21UfCL_1SeoQ';
+    const SESSION_KEY = 'lingua_session_v1';
+
+    const words = [{"id":1,"word":"book","phonetic":"/bʊk/","meaning":"کتاب","category":"اشیاء پایه","emoji":"📚","exercise":{"sentence":{"en":"I have a good book on my table.","fa":"من یک کتاب خوب روی میزم دارم.","hint":"جمله‌ای ساده با «book» بسازید؛ مانند: I have a book. یا This book is good."},"qa":{"qEn":"Where is your English book?","qFa":"کتاب انگلیسی‌ات کجاست؟","aEn":"It is in my bag.","aFa":"آن داخل کیفم است."},"story":{"en":"A boy opened an old book. Inside the book was a map of a quiet city.","fa":"پسری یک کتاب قدیمی را باز کرد. داخل کتاب نقشه‌ای از یک شهر آرام بود.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «book» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can I take your book for one day?","personAFa":"می‌توانم کتابت را برای یک روز بردارم؟","personB":"Yes, keep it as long as you need.","personBFa":"بله، تا هر زمان که لازم داری نگهش دار."},"listen":{"prompt":"Focus on the exact pronunciation of 'book' in everyday conversation.","speed":0.85,"tip":"تلفظ روان «book» را چندین بار بشنوید و در ذهن تصویرسازی کنید."},"repeat":{"target":"I have a good book on my table.","phonetic":"[book]","tip":"جمله را با صدای بلند و شمرده تکرار کنید تا ماهیچه‌های گفتاری به لهجه طبیعی عادت کنند."}}},{"id":2,"word":"house","phonetic":"/haʊs/","meaning":"خانه / منزل","category":"مکان‌ها","emoji":"🏡","exercise":{"sentence":{"en":"This house has big windows and bright rooms.","fa":"این خانه پنجره‌های بزرگ و اتاق‌های روشنی دارد.","hint":"جمله‌ای ساده با «house» بسازید؛ مانند: I have a house. یا This house is good."},"qa":{"qEn":"Who lives in that white house?","qFa":"چه کسی در آن خانه سفید زندگی می‌کند؟","aEn":"My teacher lives in that house.","aFa":"معلم من در آن خانه زندگی می‌کند."},"story":{"en":"The little bird built a house in the tree. It was safe from the cold wind.","fa":"پرنده کوچک خانه‌ای در درخت ساخت. از باد سرد در امان بود.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «house» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Is your house far from the station?","personAFa":"آیا خانه‌ات از ایستگاه دور است؟","personB":"No, my house is five minutes away.","personBFa":"خیر، خانه من پنج دقیقه فاصله دارد."},"listen":{"prompt":"Focus on the exact pronunciation of 'house' in everyday conversation.","speed":0.85,"tip":"تلفظ روان «house» را چندین بار بشنوید و در ذهن تصویرسازی کنید."},"repeat":{"target":"This house has big windows and bright rooms.","phonetic":"[house]","tip":"جمله را با صدای بلند و شمرده تکرار کنید تا ماهیچه‌های گفتاری به لهجه طبیعی عادت کنند."}}},{"id":3,"word":"water","phonetic":"/ˈwɔːtər/","meaning":"آب","category":"نیازهای پایه","emoji":"💧","exercise":{"sentence":{"en":"Clean water gives life to every plant.","fa":"آب تمیز به هر گیاهی زندگی می‌بخشد.","hint":"جمله‌ای ساده با «water» بسازید؛ مانند: I have a water. یا This water is good."},"qa":{"qEn":"Do you drink cold water in the morning?","qFa":"آیا صبح‌ها آب سرد می‌نوشی؟","aEn":"No, I drink warm water.","aFa":"خیر، من آب گرم می‌نوشم."},"story":{"en":"The sun was hot in the valley. They found fresh water near the tall green tree.","fa":"خورشید در دره داغ بود. آن‌ها نزدیک درخت بلند سبز آب گوارا پیدا کردند.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «water» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Please give me a cup of clean water.","personAFa":"لطفاً به من یک لیوان آب تمیز بدهید.","personB":"Here is fresh water for you.","personBFa":"این آب گوارا برای شما."},"listen":{"prompt":"Focus on the exact pronunciation of 'water' in everyday conversation.","speed":0.85,"tip":"تلفظ روان «water» را چندین بار بشنوید و در ذهن تصویرسازی کنید."},"repeat":{"target":"Clean water gives life to every plant.","phonetic":"[water]","tip":"جمله را با صدای بلند و شمرده تکرار کنید تا ماهیچه‌های گفتاری به لهجه طبیعی عادت کنند."}}},{"id":4,"word":"friend","phonetic":"/frend/","meaning":"دوست / یار","category":"روابط انسانی","emoji":"🤝","exercise":{"sentence":{"en":"A true friend is a great treasure in life.","fa":"یک دوست واقعی گنجینه‌ای بزرگ در زندگی است.","hint":"جمله‌ای ساده با «friend» بسازید؛ مانند: I have a friend. یا This friend is good."},"qa":{"qEn":"How long has she been your friend?","qFa":"چند وقت است که او دوست توست؟","aEn":"She has been my friend for ten years.","aFa":"او به مدت ده سال دوست من بوده است."},"story":{"en":"Two travelers walked in silence. One said: you are a good friend in hard times.","fa":"دو مسافر در سکوت قدم زدند. یکی گفت: تو در روزهای سخت دوستی خوبی هستی.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «friend» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Are you meeting a friend today?","personAFa":"آیا امروز با دوستی ملاقات می‌کنی؟","personB":"Yes, my old friend is coming here.","personBFa":"بله، دوست قدیمی‌ام به اینجا می‌آید."},"listen":{"prompt":"Focus on the exact pronunciation of 'friend' in everyday conversation.","speed":0.85,"tip":"تلفظ روان «friend» را چندین بار بشنوید و در ذهن تصویرسازی کنید."},"repeat":{"target":"A true friend is a great treasure in life.","phonetic":"[friend]","tip":"جمله را با صدای بلند و شمرده تکرار کنید تا ماهیچه‌های گفتاری به لهجه طبیعی عادت کنند."}}},{"id":5,"word":"time","phonetic":"/taɪm/","meaning":"زمان / وقت","category":"مفاهیم اصلی","emoji":"⏱️","exercise":{"sentence":{"en":"Time is the most precious thing we have.","fa":"زمان گران‌بهاترین چیزی است که داریم.","hint":"جمله‌ای ساده با «time» بسازید؛ مانند: I have a time. یا This time is good."},"qa":{"qEn":"What time do you start your study?","qFa":"چه زمانی مطالعه‌ات را شروع می‌کنی؟","aEn":"I start my study at seven in the evening.","aFa":"من ساعت هفت عصر مطالعه را شروع می‌کنم."},"story":{"en":"With time, any language becomes clear. Give time to practice every day.","fa":"با گذشت زمان، هر زبانی روشن می‌شود. هر روز برای تمرین وقت بگذارید.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «time» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Do you have time for a question?","personAFa":"آیا برای یک سوال وقت داری؟","personB":"Yes, I have enough time now.","personBFa":"بله، اکنون وقت کافی دارم."},"listen":{"prompt":"Focus on the exact pronunciation of 'time' in everyday conversation.","speed":0.85,"tip":"تلفظ روان «time» را چندین بار بشنوید و در ذهن تصویرسازی کنید."},"repeat":{"target":"Time is the most precious thing we have.","phonetic":"[time]","tip":"جمله را با صدای بلند و شمرده تکرار کنید تا ماهیچه‌های گفتاری به لهجه طبیعی عادت کنند."}}},{"id":6,"word":"give","phonetic":"/ɡɪv/","meaning":"دادن","category":"افعال اصلی آگدن","emoji":"🎁","exercise":{"sentence":{"en":"Please give me the key to the door.","fa":"لطفاً کلید در را به من بده.","hint":"جمله‌ای ساده با «give» بسازید؛ مانند: I have a give. یا This give is good."},"qa":{"qEn":"What can you give to help your friend?","qFa":"چه چیزی می‌توانی برای کمک به دوستت بدهی؟","aEn":"I give my time and attention.","aFa":"من زمان و توجه خودم را می‌دهم."},"story":{"en":"Ogden said: give simple words to the learner. With simple words, ideas grow fast.","fa":"آگدن گفت: کلمات ساده را به یادگیرنده بدهید. با کلمات ساده ایده‌ها سریع رشد می‌کنند.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «give» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Will you give me an answer today?","personAFa":"آیا امروز به من پاسخ می‌دهی؟","personB":"I will give you the answer before noon.","personBFa":"من قبل از ظهر پاسخ را به تو می‌دهم."},"listen":{"prompt":"Focus on the exact pronunciation of 'give' in everyday conversation.","speed":0.85,"tip":"تلفظ روان «give» را چندین بار بشنوید و در ذهن تصویرسازی کنید."},"repeat":{"target":"Please give me the key to the door.","phonetic":"[give]","tip":"جمله را با صدای بلند و شمرده تکرار کنید تا ماهیچه‌های گفتاری به لهجه طبیعی عادت کنند."}}},{"id":7,"word":"take","phonetic":"/teɪk/","meaning":"برداشتن / گرفتن","category":"افعال اصلی آگدن","emoji":"🤲","exercise":{"sentence":{"en":"Take this small step every single day.","fa":"هر روز این قدم کوچک را بردار.","hint":"جمله‌ای ساده با «take» بسازید؛ مانند: I have a take. یا This take is good."},"qa":{"qEn":"Did you take the right train?","qFa":"آیا قطار درست را سوار شدی؟","aEn":"Yes, I took the train to the center.","aFa":"بله، من قطار به سمت مرکز را سوار شدم."},"story":{"en":"He had to take a difficult decision. In the end, he took the quiet path.","fa":"او مجبور بود تصمیمی سخت بگیرد. در پایان، او مسیر آرام را در پیش گرفت.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «take» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Please take a seat and rest.","personAFa":"لطفاً بنشینید و استراحت کنید.","personB":"Thank you, I will take five minutes.","personBFa":"متشکرم، من پنج دقیقه استراحت خواهم کرد."},"listen":{"prompt":"Focus on the exact pronunciation of 'take' in everyday conversation.","speed":0.85,"tip":"تلفظ روان «take» را چندین بار بشنوید و در ذهن تصویرسازی کنید."},"repeat":{"target":"Take this small step every single day.","phonetic":"[take]","tip":"جمله را با صدای بلند و شمرده تکرار کنید تا ماهیچه‌های گفتاری به لهجه طبیعی عادت کنند."}}},{"id":8,"word":"come","phonetic":"/kʌm/","meaning":"آمدن","category":"افعال اصلی آگدن","emoji":"🚶","exercise":{"sentence":{"en":"Come with me to see the new garden.","fa":"با من بیا تا باغ جدید را ببینی.","hint":"جمله‌ای ساده با «come» بسازید؛ مانند: I have a come. یا This come is good."},"qa":{"qEn":"When will you come to our city?","qFa":"کی به شهر ما خواهی آمد؟","aEn":"I will come next month.","aFa":"من ماه آینده خواهم آمد."},"story":{"en":"Spring will come after the cold winter. The flowers come out into the light.","fa":"بهار پس از زمستان سرد خواهد آمد. گل‌ها به سوی نور بیرون می‌آیند.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «come» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you come early tomorrow?","personAFa":"می‌توانی فردا زود بیایی؟","personB":"Yes, I can come at eight in the morning.","personBFa":"بله، من می‌توانم ساعت هشت صبح بیایم."},"listen":{"prompt":"Focus on the exact pronunciation of 'come' in everyday conversation.","speed":0.85,"tip":"تلفظ روان «come» را چندین بار بشنوید و در ذهن تصویرسازی کنید."},"repeat":{"target":"Come with me to see the new garden.","phonetic":"[come]","tip":"جمله را با صدای بلند و شمرده تکرار کنید تا ماهیچه‌های گفتاری به لهجه طبیعی عادت کنند."}}},{"id":9,"word":"go","phonetic":"/ɡoʊ/","meaning":"رفتن","category":"افعال اصلی آگدن","emoji":"🏃","exercise":{"sentence":{"en":"We go to learn English step by step.","fa":"ما می‌رویم تا گام به گام انگلیسی بیاموزیم.","hint":"جمله‌ای ساده با «go» بسازید؛ مانند: I have a go. یا This go is good."},"qa":{"qEn":"Where do you go every morning?","qFa":"هر روز صبح کجا می‌روی؟","aEn":"I go to my office by bike.","aFa":"من با دوچرخه به دفتر کارم می‌روم."},"story":{"en":"The train had to go through the mountain. It will go fast to the open plain.","fa":"قطار باید از میان کوه می‌رفت. با سرعت به سمت دشت باز خواهد رفت.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «go» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Let us go together right now.","personAFa":"بیا همین الان با هم برویم.","personB":"Good idea, let us go before dark.","personBFa":"ایده خوبی است، بیا قبل از تاریکی برویم."},"listen":{"prompt":"Focus on the exact pronunciation of 'go' in everyday conversation.","speed":0.85,"tip":"تلفظ روان «go» را چندین بار بشنوید و در ذهن تصویرسازی کنید."},"repeat":{"target":"We go to learn English step by step.","phonetic":"[go]","tip":"جمله را با صدای بلند و شمرده تکرار کنید تا ماهیچه‌های گفتاری به لهجه طبیعی عادت کنند."}}},{"id":10,"word":"make","phonetic":"/meɪk/","meaning":"ساختن / درست کردن","category":"افعال اصلی آگدن","emoji":"🔨","exercise":{"sentence":{"en":"You can make simple sentences with Ogden words.","fa":"تو می‌توانی با کلمات آگدن جملات ساده بسازی.","hint":"جمله‌ای ساده با «make» بسازید؛ مانند: I have a make. یا This make is good."},"qa":{"qEn":"How do you make your daily plan?","qFa":"چگونه برنامه روزانه‌ات را می‌سازی؟","aEn":"I make a list on small paper.","aFa":"من فهرستی روی کاغذی کوچک می‌نویسم."},"story":{"en":"Two friends wanted to make a boat. They used wood from an old house.","fa":"دو دوست می‌خواستند قایقی بسازند. آن‌ها از چوب یک خانه قدیمی استفاده کردند.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «make» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you make a cup of tea for me?","personAFa":"می‌توانی برای من یک فنجان چای درست کنی؟","personB":"Certainly, I will make warm tea now.","personBFa":"حتماً، همین الان چای گرم درست می‌کنم."},"listen":{"prompt":"Focus on the exact pronunciation of 'make' in everyday conversation.","speed":0.85,"tip":"تلفظ روان «make» را چندین بار بشنوید و در ذهن تصویرسازی کنید."},"repeat":{"target":"You can make simple sentences with Ogden words.","phonetic":"[make]","tip":"جمله را با صدای بلند و شمرده تکرار کنید تا ماهیچه‌های گفتاری به لهجه طبیعی عادت کنند."}}},{"id":11,"word":"food","phonetic":"/fuːd/","meaning":"غذا / خوراک","category":"نیازهای پایه","emoji":"🍲","exercise":{"sentence":{"en":"Healthy food gives power to the mind.","fa":"غذای سالم به ذهن قدرت می‌بخشد.","hint":"جمله‌ای ساده با «food» بسازید؛ مانند: I have a food. یا This food is good."},"qa":{"qEn":"How do you use the word 'food'?","qFa":"چگونه از کلمه «food» استفاده می‌کنی؟","aEn":"We use 'food' in everyday talk.","aFa":"ما از «food» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'food' had an important place. Everyone who spoke used 'food' with confidence.","fa":"در دهکده آرام کلمات، «food» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «food» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «food» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'food' one more time?","personAFa":"می‌توانی «food» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'food'.","personBFa":"بله، گوش کن: «food»."}}},{"id":12,"word":"see","phonetic":"/siː/","meaning":"دیدن / فهمیدن","category":"حواس و ادراک","emoji":"👁️","exercise":{"sentence":{"en":"I see the blue sky through the window.","fa":"من آسمان آبی را از پنجره می‌بینم.","hint":"جمله‌ای ساده با «see» بسازید؛ مانند: I have a see. یا This see is good."},"qa":{"qEn":"How do you use the word 'see'?","qFa":"چگونه از کلمه «see» استفاده می‌کنی؟","aEn":"We use 'see' in everyday talk.","aFa":"ما از «see» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'see' had an important place. Everyone who spoke used 'see' with confidence.","fa":"در دهکده آرام کلمات، «see» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «see» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «see» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'see' one more time?","personAFa":"می‌توانی «see» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'see'.","personBFa":"بله، گوش کن: «see»."}}},{"id":13,"word":"get","phonetic":"/ɡet/","meaning":"به دست آوردن / رسیدن","category":"افعال اصلی آگدن","emoji":"🎯","exercise":{"sentence":{"en":"You will get great fluency with Ogden.","fa":"تو با متد آگدن به تسلط عالی دست خواهی یافت.","hint":"جمله‌ای ساده با «get» بسازید؛ مانند: I have a get. یا This get is good."},"qa":{"qEn":"How do you use the word 'get'?","qFa":"چگونه از کلمه «get» استفاده می‌کنی؟","aEn":"We use 'get' in everyday talk.","aFa":"ما از «get» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'get' had an important place. Everyone who spoke used 'get' with confidence.","fa":"در دهکده آرام کلمات، «get» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «get» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «get» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'get' one more time?","personAFa":"می‌توانی «get» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'get'.","personBFa":"بله، گوش کن: «get»."}}},{"id":14,"word":"say","phonetic":"/seɪ/","meaning":"گفتن","category":"گفتار","emoji":"🗣️","exercise":{"sentence":{"en":"Say each new word with a clear voice.","fa":"هر کلمه جدید را با صدایی رسا بگو.","hint":"جمله‌ای ساده با «say» بسازید؛ مانند: I have a say. یا This say is good."},"qa":{"qEn":"How do you use the word 'say'?","qFa":"چگونه از کلمه «say» استفاده می‌کنی؟","aEn":"We use 'say' in everyday talk.","aFa":"ما از «say» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'say' had an important place. Everyone who spoke used 'say' with confidence.","fa":"در دهکده آرام کلمات، «say» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «say» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «say» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'say' one more time?","personAFa":"می‌توانی «say» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'say'.","personBFa":"بله، گوش کن: «say»."}}},{"id":15,"word":"put","phonetic":"/pʊt/","meaning":"گذاشتن / قرار دادن","category":"افعال اصلی آگدن","emoji":"📥","exercise":{"sentence":{"en":"Put the book on the wooden table.","fa":"کتاب را روی میز چوبی بگذار.","hint":"جمله‌ای ساده با «put» بسازید؛ مانند: I have a put. یا This put is good."},"qa":{"qEn":"How do you use the word 'put'?","qFa":"چگونه از کلمه «put» استفاده می‌کنی؟","aEn":"We use 'put' in everyday talk.","aFa":"ما از «put» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'put' had an important place. Everyone who spoke used 'put' with confidence.","fa":"در دهکده آرام کلمات، «put» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «put» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «put» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'put' one more time?","personAFa":"می‌توانی «put» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'put'.","personBFa":"بله، گوش کن: «put»."}}},{"id":16,"word":"keep","phonetic":"/kiːp/","meaning":"نگه‌داشتن / ادامه دادن","category":"افعال اصلی آگدن","emoji":"🔒","exercise":{"sentence":{"en":"Keep your heart peaceful and your mind open.","fa":"قلبت را آرام و ذهنت را گشوده نگه دار.","hint":"جمله‌ای ساده با «keep» بسازید؛ مانند: I have a keep. یا This keep is good."},"qa":{"qEn":"How do you use the word 'keep'?","qFa":"چگونه از کلمه «keep» استفاده می‌کنی؟","aEn":"We use 'keep' in everyday talk.","aFa":"ما از «keep» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'keep' had an important place. Everyone who spoke used 'keep' with confidence.","fa":"در دهکده آرام کلمات، «keep» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «keep» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «keep» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'keep' one more time?","personAFa":"می‌توانی «keep» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'keep'.","personBFa":"بله، گوش کن: «keep»."}}},{"id":17,"word":"light","phonetic":"/laɪt/","meaning":"نور / روشنایی","category":"طبیعت و اشیاء","emoji":"💡","exercise":{"sentence":{"en":"Morning light entered the quiet room.","fa":"نور صبحگاهی وارد اتاق آرام شد.","hint":"جمله‌ای ساده با «light» بسازید؛ مانند: I have a light. یا This light is good."},"qa":{"qEn":"How do you use the word 'light'?","qFa":"چگونه از کلمه «light» استفاده می‌کنی؟","aEn":"We use 'light' in everyday talk.","aFa":"ما از «light» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'light' had an important place. Everyone who spoke used 'light' with confidence.","fa":"در دهکده آرام کلمات، «light» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «light» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «light» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'light' one more time?","personAFa":"می‌توانی «light» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'light'.","personBFa":"بله، گوش کن: «light»."}}},{"id":18,"word":"door","phonetic":"/dɔːr/","meaning":"در / درب","category":"اشیاء و مکان‌ها","emoji":"🚪","exercise":{"sentence":{"en":"Open the door to welcome your guests.","fa":"در را باز کن تا به مهمانانت خوش‌آمد بگویی.","hint":"جمله‌ای ساده با «door» بسازید؛ مانند: I have a door. یا This door is good."},"qa":{"qEn":"How do you use the word 'door'?","qFa":"چگونه از کلمه «door» استفاده می‌کنی؟","aEn":"We use 'door' in everyday talk.","aFa":"ما از «door» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'door' had an important place. Everyone who spoke used 'door' with confidence.","fa":"در دهکده آرام کلمات، «door» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «door» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «door» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'door' one more time?","personAFa":"می‌توانی «door» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'door'.","personBFa":"بله، گوش کن: «door»."}}},{"id":19,"word":"day","phonetic":"/deɪ/","meaning":"روز","category":"زمان","emoji":"☀️","exercise":{"sentence":{"en":"Today is a beautiful day to learn.","fa":"امروز روز زیبایی برای یادگیری است.","hint":"جمله‌ای ساده با «day» بسازید؛ مانند: I have a day. یا This day is good."},"qa":{"qEn":"How do you use the word 'day'?","qFa":"چگونه از کلمه «day» استفاده می‌کنی؟","aEn":"We use 'day' in everyday talk.","aFa":"ما از «day» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'day' had an important place. Everyone who spoke used 'day' with confidence.","fa":"در دهکده آرام کلمات، «day» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «day» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «day» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'day' one more time?","personAFa":"می‌توانی «day» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'day'.","personBFa":"بله، گوش کن: «day»."}}},{"id":20,"word":"night","phonetic":"/naɪt/","meaning":"شب","category":"زمان","emoji":"🌙","exercise":{"sentence":{"en":"Stars shine in the dark night sky.","fa":"ستارگان در آسمان تاریک شب می‌درخشند.","hint":"جمله‌ای ساده با «night» بسازید؛ مانند: I have a night. یا This night is good."},"qa":{"qEn":"How do you use the word 'night'?","qFa":"چگونه از کلمه «night» استفاده می‌کنی؟","aEn":"We use 'night' in everyday talk.","aFa":"ما از «night» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'night' had an important place. Everyone who spoke used 'night' with confidence.","fa":"در دهکده آرام کلمات، «night» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «night» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «night» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'night' one more time?","personAFa":"می‌توانی «night» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'night'.","personBFa":"بله، گوش کن: «night»."}}},{"id":21,"word":"good","phonetic":"/ɡʊd/","meaning":"خوب / نیکو","category":"صفت‌ها","emoji":"👍","exercise":{"sentence":{"en":"A good mind creates good actions.","fa":"ذهنی خوب، کردارهای خوب خلق می‌کند.","hint":"جمله‌ای ساده با «good» بسازید؛ مانند: I have a good. یا This good is good."},"qa":{"qEn":"How do you use the word 'good'?","qFa":"چگونه از کلمه «good» استفاده می‌کنی؟","aEn":"We use 'good' in everyday talk.","aFa":"ما از «good» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'good' had an important place. Everyone who spoke used 'good' with confidence.","fa":"در دهکده آرام کلمات، «good» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «good» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «good» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'good' one more time?","personAFa":"می‌توانی «good» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'good'.","personBFa":"بله، گوش کن: «good»."}}},{"id":22,"word":"new","phonetic":"/nuː/","meaning":"جدید / تازه","category":"صفت‌ها","emoji":"✨","exercise":{"sentence":{"en":"Every morning brings a new chance.","fa":"هر بامداد فرصتی تازه به همراه می‌آورد.","hint":"جمله‌ای ساده با «new» بسازید؛ مانند: I have a new. یا This new is good."},"qa":{"qEn":"How do you use the word 'new'?","qFa":"چگونه از کلمه «new» استفاده می‌کنی؟","aEn":"We use 'new' in everyday talk.","aFa":"ما از «new» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'new' had an important place. Everyone who spoke used 'new' with confidence.","fa":"در دهکده آرام کلمات، «new» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «new» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «new» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'new' one more time?","personAFa":"می‌توانی «new» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'new'.","personBFa":"بله، گوش کن: «new»."}}},{"id":23,"word":"man","phonetic":"/mæn/","meaning":"مرد / انسان","category":"انسان و جامعه","emoji":"👨","exercise":{"sentence":{"en":"The wise man spoke with kind words.","fa":"مرد خردمند با واژگانی مهربان سخن گفت.","hint":"جمله‌ای ساده با «man» بسازید؛ مانند: I have a man. یا This man is good."},"qa":{"qEn":"How do you use the word 'man'?","qFa":"چگونه از کلمه «man» استفاده می‌کنی؟","aEn":"We use 'man' in everyday talk.","aFa":"ما از «man» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'man' had an important place. Everyone who spoke used 'man' with confidence.","fa":"در دهکده آرام کلمات، «man» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «man» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «man» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'man' one more time?","personAFa":"می‌توانی «man» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'man'.","personBFa":"بله، گوش کن: «man»."}}},{"id":24,"word":"woman","phonetic":"/ˈwʊmən/","meaning":"زن / بانو","category":"انسان و جامعه","emoji":"👩","exercise":{"sentence":{"en":"The woman showed the way to the library.","fa":"آن بانو راه کتابخانه را نشان داد.","hint":"جمله‌ای ساده با «woman» بسازید؛ مانند: I have a woman. یا This woman is good."},"qa":{"qEn":"How do you use the word 'woman'?","qFa":"چگونه از کلمه «woman» استفاده می‌کنی؟","aEn":"We use 'woman' in everyday talk.","aFa":"ما از «woman» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'woman' had an important place. Everyone who spoke used 'woman' with confidence.","fa":"در دهکده آرام کلمات، «woman» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «woman» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «woman» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'woman' one more time?","personAFa":"می‌توانی «woman» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'woman'.","personBFa":"بله، گوش کن: «woman»."}}},{"id":25,"word":"child","phonetic":"/tʃaɪld/","meaning":"کودک / فرزند","category":"انسان و جامعه","emoji":"🧒","exercise":{"sentence":{"en":"Every child loves listening to a story.","fa":"هر کودکی عاشق گوش دادن به داستان است.","hint":"جمله‌ای ساده با «child» بسازید؛ مانند: I have a child. یا This child is good."},"qa":{"qEn":"How do you use the word 'child'?","qFa":"چگونه از کلمه «child» استفاده می‌کنی؟","aEn":"We use 'child' in everyday talk.","aFa":"ما از «child» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'child' had an important place. Everyone who spoke used 'child' with confidence.","fa":"در دهکده آرام کلمات، «child» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «child» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «child» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'child' one more time?","personAFa":"می‌توانی «child» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'child'.","personBFa":"بله، گوش کن: «child»."}}},{"id":26,"word":"hand","phonetic":"/hænd/","meaning":"دست","category":"بدن انسان","emoji":"✋","exercise":{"sentence":{"en":"Give me your hand and walk with me.","fa":"دستت را به من بده و با من قدم بزن.","hint":"جمله‌ای ساده با «hand» بسازید؛ مانند: I have a hand. یا This hand is good."},"qa":{"qEn":"How do you use the word 'hand'?","qFa":"چگونه از کلمه «hand» استفاده می‌کنی؟","aEn":"We use 'hand' in everyday talk.","aFa":"ما از «hand» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'hand' had an important place. Everyone who spoke used 'hand' with confidence.","fa":"در دهکده آرام کلمات، «hand» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «hand» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «hand» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'hand' one more time?","personAFa":"می‌توانی «hand» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'hand'.","personBFa":"بله، گوش کن: «hand»."}}},{"id":27,"word":"eye","phonetic":"/aɪ/","meaning":"چشم","category":"بدن انسان","emoji":"👁️","exercise":{"sentence":{"en":"Look at this picture with an open eye.","fa":"با چشمی باز به این تصویر نگاه کن.","hint":"جمله‌ای ساده با «eye» بسازید؛ مانند: I have a eye. یا This eye is good."},"qa":{"qEn":"How do you use the word 'eye'?","qFa":"چگونه از کلمه «eye» استفاده می‌کنی؟","aEn":"We use 'eye' in everyday talk.","aFa":"ما از «eye» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'eye' had an important place. Everyone who spoke used 'eye' with confidence.","fa":"در دهکده آرام کلمات، «eye» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «eye» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «eye» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'eye' one more time?","personAFa":"می‌توانی «eye» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'eye'.","personBFa":"بله، گوش کن: «eye»."}}},{"id":28,"word":"ear","phonetic":"/ɪr/","meaning":"گوش","category":"بدن انسان","emoji":"👂","exercise":{"sentence":{"en":"Give your ear to the native pronunciation.","fa":"گوش جان به تلفظ اصیل بسپار.","hint":"جمله‌ای ساده با «ear» بسازید؛ مانند: I have a ear. یا This ear is good."},"qa":{"qEn":"How do you use the word 'ear'?","qFa":"چگونه از کلمه «ear» استفاده می‌کنی؟","aEn":"We use 'ear' in everyday talk.","aFa":"ما از «ear» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'ear' had an important place. Everyone who spoke used 'ear' with confidence.","fa":"در دهکده آرام کلمات، «ear» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «ear» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «ear» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'ear' one more time?","personAFa":"می‌توانی «ear» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'ear'.","personBFa":"بله، گوش کن: «ear»."}}},{"id":29,"word":"head","phonetic":"/hed/","meaning":"سر / رئیس","category":"بدن و مفاهیم","emoji":"🧠","exercise":{"sentence":{"en":"Keep a calm head during tests.","fa":"در طول آزمون‌ها سری آرام داشته باش.","hint":"جمله‌ای ساده با «head» بسازید؛ مانند: I have a head. یا This head is good."},"qa":{"qEn":"How do you use the word 'head'?","qFa":"چگونه از کلمه «head» استفاده می‌کنی؟","aEn":"We use 'head' in everyday talk.","aFa":"ما از «head» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'head' had an important place. Everyone who spoke used 'head' with confidence.","fa":"در دهکده آرام کلمات، «head» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «head» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «head» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'head' one more time?","personAFa":"می‌توانی «head» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'head'.","personBFa":"بله، گوش کن: «head»."}}},{"id":30,"word":"heart","phonetic":"/hɑːrt/","meaning":"قلب / دل","category":"بدن و احساسات","emoji":"❤️","exercise":{"sentence":{"en":"Learn with a warm and patient heart.","fa":"با قلبی گرم و صبور یاد بگیر.","hint":"جمله‌ای ساده با «heart» بسازید؛ مانند: I have a heart. یا This heart is good."},"qa":{"qEn":"How do you use the word 'heart'?","qFa":"چگونه از کلمه «heart» استفاده می‌کنی؟","aEn":"We use 'heart' in everyday talk.","aFa":"ما از «heart» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'heart' had an important place. Everyone who spoke used 'heart' with confidence.","fa":"در دهکده آرام کلمات، «heart» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «heart» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «heart» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'heart' one more time?","personAFa":"می‌توانی «heart» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'heart'.","personBFa":"بله، گوش کن: «heart»."}}},{"id":31,"word":"word","phonetic":"/wɜːrd/","meaning":"کلمه / واژه","category":"زبان و سخن","emoji":"🔤","exercise":{"sentence":{"en":"One simple word can change a mind.","fa":"یک کلمه ساده می‌تواند ذهنی را دگرگون سازد.","hint":"جمله‌ای ساده با «word» بسازید؛ مانند: I have a word. یا This word is good."},"qa":{"qEn":"How do you use the word 'word'?","qFa":"چگونه از کلمه «word» استفاده می‌کنی؟","aEn":"We use 'word' in everyday talk.","aFa":"ما از «word» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'word' had an important place. Everyone who spoke used 'word' with confidence.","fa":"در دهکده آرام کلمات، «word» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «word» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «word» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'word' one more time?","personAFa":"می‌توانی «word» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'word'.","personBFa":"بله، گوش کن: «word»."}}},{"id":32,"word":"name","phonetic":"/neɪm/","meaning":"نام / اسم","category":"شناسه‌ها","emoji":"🏷️","exercise":{"sentence":{"en":"What is your name, please?","fa":"نام شما چیست، لطفاً؟","hint":"جمله‌ای ساده با «name» بسازید؛ مانند: I have a name. یا This name is good."},"qa":{"qEn":"How do you use the word 'name'?","qFa":"چگونه از کلمه «name» استفاده می‌کنی؟","aEn":"We use 'name' in everyday talk.","aFa":"ما از «name» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'name' had an important place. Everyone who spoke used 'name' with confidence.","fa":"در دهکده آرام کلمات، «name» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «name» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «name» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'name' one more time?","personAFa":"می‌توانی «name» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'name'.","personBFa":"بله، گوش کن: «name»."}}},{"id":33,"word":"place","phonetic":"/pleɪs/","meaning":"مکان / جا","category":"مفاهیم فضا","emoji":"📍","exercise":{"sentence":{"en":"This library is a quiet place to read.","fa":"این کتابخانه مکانی آرام برای خواندن است.","hint":"جمله‌ای ساده با «place» بسازید؛ مانند: I have a place. یا This place is good."},"qa":{"qEn":"How do you use the word 'place'?","qFa":"چگونه از کلمه «place» استفاده می‌کنی؟","aEn":"We use 'place' in everyday talk.","aFa":"ما از «place» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'place' had an important place. Everyone who spoke used 'place' with confidence.","fa":"در دهکده آرام کلمات، «place» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «place» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «place» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'place' one more time?","personAFa":"می‌توانی «place» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'place'.","personBFa":"بله، گوش کن: «place»."}}},{"id":34,"word":"room","phonetic":"/ruːm/","meaning":"اتاق / فضا","category":"مکان‌ها","emoji":"🛋️","exercise":{"sentence":{"en":"My study room has warm sunlight.","fa":"اتاق مطالعه من نور گرم خورشید دارد.","hint":"جمله‌ای ساده با «room» بسازید؛ مانند: I have a room. یا This room is good."},"qa":{"qEn":"How do you use the word 'room'?","qFa":"چگونه از کلمه «room» استفاده می‌کنی؟","aEn":"We use 'room' in everyday talk.","aFa":"ما از «room» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'room' had an important place. Everyone who spoke used 'room' with confidence.","fa":"در دهکده آرام کلمات، «room» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «room» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «room» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'room' one more time?","personAFa":"می‌توانی «room» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'room'.","personBFa":"بله، گوش کن: «room»."}}},{"id":35,"word":"table","phonetic":"/ˈteɪbl/","meaning":"میز","category":"اشیاء","emoji":"🪑","exercise":{"sentence":{"en":"Place your notebook on the table.","fa":"دفترت را روی میز قرار بده.","hint":"جمله‌ای ساده با «table» بسازید؛ مانند: I have a table. یا This table is good."},"qa":{"qEn":"How do you use the word 'table'?","qFa":"چگونه از کلمه «table» استفاده می‌کنی؟","aEn":"We use 'table' in everyday talk.","aFa":"ما از «table» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'table' had an important place. Everyone who spoke used 'table' with confidence.","fa":"در دهکده آرام کلمات، «table» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «table» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «table» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'table' one more time?","personAFa":"می‌توانی «table» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'table'.","personBFa":"بله، گوش کن: «table»."}}},{"id":36,"word":"tree","phonetic":"/triː/","meaning":"درخت","category":"طبیعت","emoji":"🌳","exercise":{"sentence":{"en":"The big green tree gives sweet shadow.","fa":"درخت بزرگ سبز سایه‌ای دلپذیر می‌بخشد.","hint":"جمله‌ای ساده با «tree» بسازید؛ مانند: I have a tree. یا This tree is good."},"qa":{"qEn":"How do you use the word 'tree'?","qFa":"چگونه از کلمه «tree» استفاده می‌کنی؟","aEn":"We use 'tree' in everyday talk.","aFa":"ما از «tree» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'tree' had an important place. Everyone who spoke used 'tree' with confidence.","fa":"در دهکده آرام کلمات، «tree» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «tree» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «tree» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'tree' one more time?","personAFa":"می‌توانی «tree» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'tree'.","personBFa":"بله، گوش کن: «tree»."}}},{"id":37,"word":"sun","phonetic":"/sʌn/","meaning":"خورشید / آفتاب","category":"طبیعت","emoji":"☀️","exercise":{"sentence":{"en":"The sun brings warmth to the earth.","fa":"خورشید گرما را به زمین می‌آورد.","hint":"جمله‌ای ساده با «sun» بسازید؛ مانند: I have a sun. یا This sun is good."},"qa":{"qEn":"How do you use the word 'sun'?","qFa":"چگونه از کلمه «sun» استفاده می‌کنی؟","aEn":"We use 'sun' in everyday talk.","aFa":"ما از «sun» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'sun' had an important place. Everyone who spoke used 'sun' with confidence.","fa":"در دهکده آرام کلمات، «sun» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «sun» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «sun» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'sun' one more time?","personAFa":"می‌توانی «sun» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'sun'.","personBFa":"بله، گوش کن: «sun»."}}},{"id":38,"word":"moon","phonetic":"/muːn/","meaning":"ماه","category":"طبیعت","emoji":"🌕","exercise":{"sentence":{"en":"The full moon shines silver in the dark.","fa":"ماه بدر در تاریکی سیمین‌فام می‌درخشد.","hint":"جمله‌ای ساده با «moon» بسازید؛ مانند: I have a moon. یا This moon is good."},"qa":{"qEn":"How do you use the word 'moon'?","qFa":"چگونه از کلمه «moon» استفاده می‌کنی؟","aEn":"We use 'moon' in everyday talk.","aFa":"ما از «moon» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'moon' had an important place. Everyone who spoke used 'moon' with confidence.","fa":"در دهکده آرام کلمات، «moon» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «moon» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «moon» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'moon' one more time?","personAFa":"می‌توانی «moon» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'moon'.","personBFa":"بله، گوش کن: «moon»."}}},{"id":39,"word":"star","phonetic":"/stɑːr/","meaning":"ستاره","category":"طبیعت","emoji":"⭐","exercise":{"sentence":{"en":"Every star tells a distant story.","fa":"هر ستاره داستانی از دوردست‌ها بازمی‌گوید.","hint":"جمله‌ای ساده با «star» بسازید؛ مانند: I have a star. یا This star is good."},"qa":{"qEn":"How do you use the word 'star'?","qFa":"چگونه از کلمه «star» استفاده می‌کنی؟","aEn":"We use 'star' in everyday talk.","aFa":"ما از «star» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'star' had an important place. Everyone who spoke used 'star' with confidence.","fa":"در دهکده آرام کلمات، «star» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «star» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «star» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'star' one more time?","personAFa":"می‌توانی «star» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'star'.","personBFa":"بله، گوش کن: «star»."}}},{"id":40,"word":"sky","phonetic":"/skaɪ/","meaning":"آسمان","category":"طبیعت","emoji":"🌌","exercise":{"sentence":{"en":"The clear blue sky has no clouds today.","fa":"آسمان آبی و زلال امروز هیچ ابری ندارد.","hint":"جمله‌ای ساده با «sky» بسازید؛ مانند: I have a sky. یا This sky is good."},"qa":{"qEn":"How do you use the word 'sky'?","qFa":"چگونه از کلمه «sky» استفاده می‌کنی؟","aEn":"We use 'sky' in everyday talk.","aFa":"ما از «sky» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'sky' had an important place. Everyone who spoke used 'sky' with confidence.","fa":"در دهکده آرام کلمات، «sky» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «sky» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «sky» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'sky' one more time?","personAFa":"می‌توانی «sky» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'sky'.","personBFa":"بله، گوش کن: «sky»."}}},{"id":41,"word":"fire","phonetic":"/ˈfaɪər/","meaning":"آتش","category":"طبیعت و عناصر","emoji":"🔥","exercise":{"sentence":{"en":"The warm fire gave comfort.","fa":"آتش گرم آرامش بخشید.","hint":"جمله‌ای ساده با «fire» بسازید؛ مانند: I have a fire. یا This fire is good."},"qa":{"qEn":"How do you use the word 'fire'?","qFa":"چگونه از کلمه «fire» استفاده می‌کنی؟","aEn":"We use 'fire' in everyday talk.","aFa":"ما از «fire» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'fire' had an important place. Everyone who spoke used 'fire' with confidence.","fa":"در دهکده آرام کلمات، «fire» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «fire» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «fire» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'fire' one more time?","personAFa":"می‌توانی «fire» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'fire'.","personBFa":"بله، گوش کن: «fire»."}}},{"id":42,"word":"earth","phonetic":"/ɜːrθ/","meaning":"زمین / خاک","category":"طبیعت","emoji":"🌍","exercise":{"sentence":{"en":"We care for the green earth.","fa":"ما مراقب زمین سبز هستیم.","hint":"جمله‌ای ساده با «earth» بسازید؛ مانند: I have a earth. یا This earth is good."},"qa":{"qEn":"How do you use the word 'earth'?","qFa":"چگونه از کلمه «earth» استفاده می‌کنی؟","aEn":"We use 'earth' in everyday talk.","aFa":"ما از «earth» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'earth' had an important place. Everyone who spoke used 'earth' with confidence.","fa":"در دهکده آرام کلمات، «earth» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «earth» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «earth» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'earth' one more time?","personAFa":"می‌توانی «earth» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'earth'.","personBFa":"بله، گوش کن: «earth»."}}},{"id":43,"word":"wind","phonetic":"/wɪnd/","meaning":"باد / نسیم","category":"طبیعت","emoji":"💨","exercise":{"sentence":{"en":"A gentle wind moved the leaves.","fa":"نسیمی ملایم برگ‌ها را تکان داد.","hint":"جمله‌ای ساده با «wind» بسازید؛ مانند: I have a wind. یا This wind is good."},"qa":{"qEn":"How do you use the word 'wind'?","qFa":"چگونه از کلمه «wind» استفاده می‌کنی؟","aEn":"We use 'wind' in everyday talk.","aFa":"ما از «wind» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'wind' had an important place. Everyone who spoke used 'wind' with confidence.","fa":"در دهکده آرام کلمات، «wind» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «wind» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «wind» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'wind' one more time?","personAFa":"می‌توانی «wind» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'wind'.","personBFa":"بله، گوش کن: «wind»."}}},{"id":44,"word":"sea","phonetic":"/siː/","meaning":"دریا","category":"طبیعت","emoji":"🌊","exercise":{"sentence":{"en":"The sea was calm and blue.","fa":"دریا آرام و آبی بود.","hint":"جمله‌ای ساده با «sea» بسازید؛ مانند: I have a sea. یا This sea is good."},"qa":{"qEn":"How do you use the word 'sea'?","qFa":"چگونه از کلمه «sea» استفاده می‌کنی؟","aEn":"We use 'sea' in everyday talk.","aFa":"ما از «sea» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'sea' had an important place. Everyone who spoke used 'sea' with confidence.","fa":"در دهکده آرام کلمات، «sea» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «sea» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «sea» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'sea' one more time?","personAFa":"می‌توانی «sea» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'sea'.","personBFa":"بله، گوش کن: «sea»."}}},{"id":45,"word":"river","phonetic":"/ˈrɪvər/","meaning":"رودخانه","category":"طبیعت","emoji":"🏞️","exercise":{"sentence":{"en":"Clean water flows in the river.","fa":"آب زلال در رودخانه روان است.","hint":"جمله‌ای ساده با «river» بسازید؛ مانند: I have a river. یا This river is good."},"qa":{"qEn":"How do you use the word 'river'?","qFa":"چگونه از کلمه «river» استفاده می‌کنی؟","aEn":"We use 'river' in everyday talk.","aFa":"ما از «river» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'river' had an important place. Everyone who spoke used 'river' with confidence.","fa":"در دهکده آرام کلمات، «river» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «river» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «river» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'river' one more time?","personAFa":"می‌توانی «river» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'river'.","personBFa":"بله، گوش کن: «river»."}}},{"id":46,"word":"road","phonetic":"/roʊd/","meaning":"جاده / راه","category":"مکان‌ها","emoji":"🛣️","exercise":{"sentence":{"en":"Follow this long road to the town.","fa":"این جاده طولانی را تا شهر دنبال کن.","hint":"جمله‌ای ساده با «road» بسازید؛ مانند: I have a road. یا This road is good."},"qa":{"qEn":"How do you use the word 'road'?","qFa":"چگونه از کلمه «road» استفاده می‌کنی؟","aEn":"We use 'road' in everyday talk.","aFa":"ما از «road» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'road' had an important place. Everyone who spoke used 'road' with confidence.","fa":"در دهکده آرام کلمات، «road» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «road» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «road» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'road' one more time?","personAFa":"می‌توانی «road» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'road'.","personBFa":"بله، گوش کن: «road»."}}},{"id":47,"word":"city","phonetic":"/ˈsɪti/","meaning":"شهر","category":"مکان‌ها","emoji":"🏙️","exercise":{"sentence":{"en":"The city has libraries and parks.","fa":"شهر کتابخانه‌ها و بوستان‌ها دارد.","hint":"جمله‌ای ساده با «city» بسازید؛ مانند: I have a city. یا This city is good."},"qa":{"qEn":"How do you use the word 'city'?","qFa":"چگونه از کلمه «city» استفاده می‌کنی؟","aEn":"We use 'city' in everyday talk.","aFa":"ما از «city» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'city' had an important place. Everyone who spoke used 'city' with confidence.","fa":"در دهکده آرام کلمات، «city» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «city» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «city» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'city' one more time?","personAFa":"می‌توانی «city» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'city'.","personBFa":"بله، گوش کن: «city»."}}},{"id":48,"word":"country","phonetic":"/ˈkʌntri/","meaning":"کشور / روستا","category":"مکان‌ها","emoji":"🗺️","exercise":{"sentence":{"en":"People from every country can learn.","fa":"مردم از هر کشوری می‌توانند بیاموزند.","hint":"جمله‌ای ساده با «country» بسازید؛ مانند: I have a country. یا This country is good."},"qa":{"qEn":"How do you use the word 'country'?","qFa":"چگونه از کلمه «country» استفاده می‌کنی؟","aEn":"We use 'country' in everyday talk.","aFa":"ما از «country» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'country' had an important place. Everyone who spoke used 'country' with confidence.","fa":"در دهکده آرام کلمات، «country» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «country» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «country» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'country' one more time?","personAFa":"می‌توانی «country» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'country'.","personBFa":"بله، گوش کن: «country»."}}},{"id":49,"word":"school","phonetic":"/skuːl/","meaning":"مدرسه","category":"آموزش","emoji":"🏫","exercise":{"sentence":{"en":"School is a temple of knowledge.","fa":"مدرسه معبد دانش است.","hint":"جمله‌ای ساده با «school» بسازید؛ مانند: I have a school. یا This school is good."},"qa":{"qEn":"How do you use the word 'school'?","qFa":"چگونه از کلمه «school» استفاده می‌کنی؟","aEn":"We use 'school' in everyday talk.","aFa":"ما از «school» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'school' had an important place. Everyone who spoke used 'school' with confidence.","fa":"در دهکده آرام کلمات، «school» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «school» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «school» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'school' one more time?","personAFa":"می‌توانی «school» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'school'.","personBFa":"بله، گوش کن: «school»."}}},{"id":50,"word":"story","phonetic":"/ˈstɔːri/","meaning":"داستان","category":"زبان و ادبیات","emoji":"📖","exercise":{"sentence":{"en":"Tell me an interesting story.","fa":"داستانی جالب برایم بازگو کن.","hint":"جمله‌ای ساده با «story» بسازید؛ مانند: I have a story. یا This story is good."},"qa":{"qEn":"How do you use the word 'story'?","qFa":"چگونه از کلمه «story» استفاده می‌کنی؟","aEn":"We use 'story' in everyday talk.","aFa":"ما از «story» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'story' had an important place. Everyone who spoke used 'story' with confidence.","fa":"در دهکده آرام کلمات، «story» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «story» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «story» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'story' one more time?","personAFa":"می‌توانی «story» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'story'.","personBFa":"بله، گوش کن: «story»."}}},{"id":51,"word":"question","phonetic":"/ˈkwestʃən/","meaning":"سوال / پرسش","category":"گفت‌وگو","emoji":"❓","exercise":{"sentence":{"en":"Ask any question you have.","fa":"هر سوالی داری بپرس.","hint":"جمله‌ای ساده با «question» بسازید؛ مانند: I have a question. یا This question is good."},"qa":{"qEn":"How do you use the word 'question'?","qFa":"چگونه از کلمه «question» استفاده می‌کنی؟","aEn":"We use 'question' in everyday talk.","aFa":"ما از «question» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'question' had an important place. Everyone who spoke used 'question' with confidence.","fa":"در دهکده آرام کلمات، «question» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «question» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «question» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'question' one more time?","personAFa":"می‌توانی «question» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'question'.","personBFa":"بله، گوش کن: «question»."}}},{"id":52,"word":"answer","phonetic":"/ˈænsər/","meaning":"پاسخ / جواب","category":"گفت‌وگو","emoji":"💡","exercise":{"sentence":{"en":"Find the simple answer in the book.","fa":"پاسخ ساده را در کتاب بیاب.","hint":"جمله‌ای ساده با «answer» بسازید؛ مانند: I have a answer. یا This answer is good."},"qa":{"qEn":"How do you use the word 'answer'?","qFa":"چگونه از کلمه «answer» استفاده می‌کنی؟","aEn":"We use 'answer' in everyday talk.","aFa":"ما از «answer» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'answer' had an important place. Everyone who spoke used 'answer' with confidence.","fa":"در دهکده آرام کلمات، «answer» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «answer» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «answer» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'answer' one more time?","personAFa":"می‌توانی «answer» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'answer'.","personBFa":"بله، گوش کن: «answer»."}}},{"id":53,"word":"help","phonetic":"/help/","meaning":"کمک / یاری","category":"ارتباط","emoji":"🆘","exercise":{"sentence":{"en":"Can you help me with this word?","fa":"می‌توانی در این کلمه به من کمک کنی؟","hint":"جمله‌ای ساده با «help» بسازید؛ مانند: I have a help. یا This help is good."},"qa":{"qEn":"How do you use the word 'help'?","qFa":"چگونه از کلمه «help» استفاده می‌کنی؟","aEn":"We use 'help' in everyday talk.","aFa":"ما از «help» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'help' had an important place. Everyone who spoke used 'help' with confidence.","fa":"در دهکده آرام کلمات، «help» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «help» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «help» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'help' one more time?","personAFa":"می‌توانی «help» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'help'.","personBFa":"بله، گوش کن: «help»."}}},{"id":54,"word":"work","phonetic":"/wɜːrk/","meaning":"کار / فعالیت","category":"زندگی","emoji":"💼","exercise":{"sentence":{"en":"Honest work brings good peace.","fa":"کار صادقانه آرامش نیکو می‌آورد.","hint":"جمله‌ای ساده با «work» بسازید؛ مانند: I have a work. یا This work is good."},"qa":{"qEn":"How do you use the word 'work'?","qFa":"چگونه از کلمه «work» استفاده می‌کنی؟","aEn":"We use 'work' in everyday talk.","aFa":"ما از «work» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'work' had an important place. Everyone who spoke used 'work' with confidence.","fa":"در دهکده آرام کلمات، «work» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «work» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «work» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'work' one more time?","personAFa":"می‌توانی «work» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'work'.","personBFa":"بله، گوش کن: «work»."}}},{"id":55,"word":"play","phonetic":"/pleɪ/","meaning":"بازی کردن / نواختن","category":"فعالیت","emoji":"🎮","exercise":{"sentence":{"en":"Children play in the sunshine.","fa":"کودکان در روشنایی آفتاب بازی می‌کنند.","hint":"جمله‌ای ساده با «play» بسازید؛ مانند: I have a play. یا This play is good."},"qa":{"qEn":"How do you use the word 'play'?","qFa":"چگونه از کلمه «play» استفاده می‌کنی؟","aEn":"We use 'play' in everyday talk.","aFa":"ما از «play» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'play' had an important place. Everyone who spoke used 'play' with confidence.","fa":"در دهکده آرام کلمات، «play» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «play» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «play» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'play' one more time?","personAFa":"می‌توانی «play» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'play'.","personBFa":"بله، گوش کن: «play»."}}},{"id":56,"word":"learn","phonetic":"/lɜːrn/","meaning":"یاد گرفتن","category":"آموزش","emoji":"🎓","exercise":{"sentence":{"en":"Learn with joy every single morning.","fa":"هر بامداد با شادی بیاموز.","hint":"جمله‌ای ساده با «learn» بسازید؛ مانند: I have a learn. یا This learn is good."},"qa":{"qEn":"How do you use the word 'learn'?","qFa":"چگونه از کلمه «learn» استفاده می‌کنی؟","aEn":"We use 'learn' in everyday talk.","aFa":"ما از «learn» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'learn' had an important place. Everyone who spoke used 'learn' with confidence.","fa":"در دهکده آرام کلمات، «learn» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «learn» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «learn» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'learn' one more time?","personAFa":"می‌توانی «learn» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'learn'.","personBFa":"بله، گوش کن: «learn»."}}},{"id":57,"word":"read","phonetic":"/riːd/","meaning":"خواندن","category":"آموزش","emoji":"👓","exercise":{"sentence":{"en":"Read words aloud to hear your voice.","fa":"کلمات را بلند بخوان تا صدایت را بشنوی.","hint":"جمله‌ای ساده با «read» بسازید؛ مانند: I have a read. یا This read is good."},"qa":{"qEn":"How do you use the word 'read'?","qFa":"چگونه از کلمه «read» استفاده می‌کنی؟","aEn":"We use 'read' in everyday talk.","aFa":"ما از «read» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'read' had an important place. Everyone who spoke used 'read' with confidence.","fa":"در دهکده آرام کلمات، «read» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «read» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «read» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'read' one more time?","personAFa":"می‌توانی «read» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'read'.","personBFa":"بله، گوش کن: «read»."}}},{"id":58,"word":"write","phonetic":"/raɪt/","meaning":"نوشتن","category":"آموزش","emoji":"✍️","exercise":{"sentence":{"en":"Write the meaning in your notebook.","fa":"معنی را در دفترچه‌ات بنویس.","hint":"جمله‌ای ساده با «write» بسازید؛ مانند: I have a write. یا This write is good."},"qa":{"qEn":"How do you use the word 'write'?","qFa":"چگونه از کلمه «write» استفاده می‌کنی؟","aEn":"We use 'write' in everyday talk.","aFa":"ما از «write» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'write' had an important place. Everyone who spoke used 'write' with confidence.","fa":"در دهکده آرام کلمات، «write» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «write» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «write» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'write' one more time?","personAFa":"می‌توانی «write» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'write'.","personBFa":"بله، گوش کن: «write»."}}},{"id":59,"word":"listen","phonetic":"/ˈlɪsn/","meaning":"گوش دادن","category":"ارتباط","emoji":"🎧","exercise":{"sentence":{"en":"Listen to the sound of each word.","fa":"به آوای هر کلمه گوش فرا ده.","hint":"جمله‌ای ساده با «listen» بسازید؛ مانند: I have a listen. یا This listen is good."},"qa":{"qEn":"How do you use the word 'listen'?","qFa":"چگونه از کلمه «listen» استفاده می‌کنی؟","aEn":"We use 'listen' in everyday talk.","aFa":"ما از «listen» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'listen' had an important place. Everyone who spoke used 'listen' with confidence.","fa":"در دهکده آرام کلمات، «listen» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «listen» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «listen» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'listen' one more time?","personAFa":"می‌توانی «listen» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'listen'.","personBFa":"بله، گوش کن: «listen»."}}},{"id":60,"word":"speak","phonetic":"/spiːk/","meaning":"صحبت کردن","category":"ارتباط","emoji":"🗣️","exercise":{"sentence":{"en":"Speak English with confidence.","fa":"با اعتماد به نفس انگلیسی صحبت کن.","hint":"جمله‌ای ساده با «speak» بسازید؛ مانند: I have a speak. یا This speak is good."},"qa":{"qEn":"How do you use the word 'speak'?","qFa":"چگونه از کلمه «speak» استفاده می‌کنی؟","aEn":"We use 'speak' in everyday talk.","aFa":"ما از «speak» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'speak' had an important place. Everyone who spoke used 'speak' with confidence.","fa":"در دهکده آرام کلمات، «speak» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «speak» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «speak» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'speak' one more time?","personAFa":"می‌توانی «speak» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'speak'.","personBFa":"بله، گوش کن: «speak»."}}},{"id":61,"word":"love","phonetic":"/lʌv/","meaning":"عشق / دوست داشتن","category":"احساسات","emoji":"💖","exercise":{"sentence":{"en":"I love learning languages.","fa":"من عاشق یادگیری زبان‌ها هستم.","hint":"جمله‌ای ساده با «love» بسازید؛ مانند: I have a love. یا This love is good."},"qa":{"qEn":"How do you use the word 'love'?","qFa":"چگونه از کلمه «love» استفاده می‌کنی؟","aEn":"We use 'love' in everyday talk.","aFa":"ما از «love» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'love' had an important place. Everyone who spoke used 'love' with confidence.","fa":"در دهکده آرام کلمات، «love» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «love» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «love» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'love' one more time?","personAFa":"می‌توانی «love» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'love'.","personBFa":"بله، گوش کن: «love»."}}},{"id":62,"word":"hope","phonetic":"/hoʊp/","meaning":"امید","category":"احساسات","emoji":"🌱","exercise":{"sentence":{"en":"There is always hope for tomorrow.","fa":"همواره برای فردا امید هست.","hint":"جمله‌ای ساده با «hope» بسازید؛ مانند: I have a hope. یا This hope is good."},"qa":{"qEn":"How do you use the word 'hope'?","qFa":"چگونه از کلمه «hope» استفاده می‌کنی؟","aEn":"We use 'hope' in everyday talk.","aFa":"ما از «hope» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'hope' had an important place. Everyone who spoke used 'hope' with confidence.","fa":"در دهکده آرام کلمات، «hope» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «hope» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «hope» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'hope' one more time?","personAFa":"می‌توانی «hope» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'hope'.","personBFa":"بله، گوش کن: «hope»."}}},{"id":63,"word":"peace","phonetic":"/piːs/","meaning":"صلح / آرامش","category":"مفاهیم والا","emoji":"🕊️","exercise":{"sentence":{"en":"Ogden designed English for world peace.","fa":"آگدن انگلیسی را برای صلح جهانی طراحی کرد.","hint":"جمله‌ای ساده با «peace» بسازید؛ مانند: I have a peace. یا This peace is good."},"qa":{"qEn":"How do you use the word 'peace'?","qFa":"چگونه از کلمه «peace» استفاده می‌کنی؟","aEn":"We use 'peace' in everyday talk.","aFa":"ما از «peace» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'peace' had an important place. Everyone who spoke used 'peace' with confidence.","fa":"در دهکده آرام کلمات، «peace» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «peace» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «peace» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'peace' one more time?","personAFa":"می‌توانی «peace» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'peace'.","personBFa":"بله، گوش کن: «peace»."}}},{"id":64,"word":"mind","phonetic":"/maɪnd/","meaning":"ذهن / اندیشه","category":"فکر","emoji":"🧠","exercise":{"sentence":{"en":"Keep an open and curious mind.","fa":"ذهنی باز و کنجکاو داشته باش.","hint":"جمله‌ای ساده با «mind» بسازید؛ مانند: I have a mind. یا This mind is good."},"qa":{"qEn":"How do you use the word 'mind'?","qFa":"چگونه از کلمه «mind» استفاده می‌کنی؟","aEn":"We use 'mind' in everyday talk.","aFa":"ما از «mind» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'mind' had an important place. Everyone who spoke used 'mind' with confidence.","fa":"در دهکده آرام کلمات، «mind» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «mind» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «mind» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'mind' one more time?","personAFa":"می‌توانی «mind» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'mind'.","personBFa":"بله، گوش کن: «mind»."}}},{"id":65,"word":"idea","phonetic":"/aɪˈdiːə/","meaning":"ایده / فکر","category":"فکر","emoji":"💡","exercise":{"sentence":{"en":"Basic English is a brilliant idea.","fa":"بیسیک انگلیش ایده‌ای درخشان است.","hint":"جمله‌ای ساده با «idea» بسازید؛ مانند: I have a idea. یا This idea is good."},"qa":{"qEn":"How do you use the word 'idea'?","qFa":"چگونه از کلمه «idea» استفاده می‌کنی؟","aEn":"We use 'idea' in everyday talk.","aFa":"ما از «idea» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'idea' had an important place. Everyone who spoke used 'idea' with confidence.","fa":"در دهکده آرام کلمات، «idea» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «idea» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «idea» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'idea' one more time?","personAFa":"می‌توانی «idea» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'idea'.","personBFa":"بله، گوش کن: «idea»."}}},{"id":66,"word":"way","phonetic":"/weɪ/","meaning":"راه / روش","category":"مسیر","emoji":"🧭","exercise":{"sentence":{"en":"Practice is the true way to succeed.","fa":"تمرین راه واقعی رسیدن به موفقیت است.","hint":"جمله‌ای ساده با «way» بسازید؛ مانند: I have a way. یا This way is good."},"qa":{"qEn":"How do you use the word 'way'?","qFa":"چگونه از کلمه «way» استفاده می‌کنی؟","aEn":"We use 'way' in everyday talk.","aFa":"ما از «way» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'way' had an important place. Everyone who spoke used 'way' with confidence.","fa":"در دهکده آرام کلمات، «way» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «way» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «way» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'way' one more time?","personAFa":"می‌توانی «way» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'way'.","personBFa":"بله، گوش کن: «way»."}}},{"id":67,"word":"step","phonetic":"/step/","meaning":"قدم / گام","category":"حرکت","emoji":"👣","exercise":{"sentence":{"en":"Take one step forward every day.","fa":"هر روز یک قدم به پیش بردار.","hint":"جمله‌ای ساده با «step» بسازید؛ مانند: I have a step. یا This step is good."},"qa":{"qEn":"How do you use the word 'step'?","qFa":"چگونه از کلمه «step» استفاده می‌کنی؟","aEn":"We use 'step' in everyday talk.","aFa":"ما از «step» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'step' had an important place. Everyone who spoke used 'step' with confidence.","fa":"در دهکده آرام کلمات، «step» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «step» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «step» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'step' one more time?","personAFa":"می‌توانی «step» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'step'.","personBFa":"بله، گوش کن: «step»."}}},{"id":68,"word":"start","phonetic":"/stɑːrt/","meaning":"شروع کردن","category":"حرکت","emoji":"🚀","exercise":{"sentence":{"en":"Start your lesson right now.","fa":"درست همین الان درستان را شروع کنید.","hint":"جمله‌ای ساده با «start» بسازید؛ مانند: I have a start. یا This start is good."},"qa":{"qEn":"How do you use the word 'start'?","qFa":"چگونه از کلمه «start» استفاده می‌کنی؟","aEn":"We use 'start' in everyday talk.","aFa":"ما از «start» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'start' had an important place. Everyone who spoke used 'start' with confidence.","fa":"در دهکده آرام کلمات، «start» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «start» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «start» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'start' one more time?","personAFa":"می‌توانی «start» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'start'.","personBFa":"بله، گوش کن: «start»."}}},{"id":69,"word":"stop","phonetic":"/stɑːp/","meaning":"ایستادن / توقف","category":"حرکت","emoji":"🛑","exercise":{"sentence":{"en":"Never stop learning new words.","fa":"هرگز یادگیری کلمات جدید را متوقف نکن.","hint":"جمله‌ای ساده با «stop» بسازید؛ مانند: I have a stop. یا This stop is good."},"qa":{"qEn":"How do you use the word 'stop'?","qFa":"چگونه از کلمه «stop» استفاده می‌کنی؟","aEn":"We use 'stop' in everyday talk.","aFa":"ما از «stop» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'stop' had an important place. Everyone who spoke used 'stop' with confidence.","fa":"در دهکده آرام کلمات، «stop» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «stop» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «stop» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'stop' one more time?","personAFa":"می‌توانی «stop» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'stop'.","personBFa":"بله، گوش کن: «stop»."}}},{"id":70,"word":"open","phonetic":"/ˈoʊpən/","meaning":"باز کردن / گشوده","category":"حالت","emoji":"🔓","exercise":{"sentence":{"en":"Open your eyes to new knowledge.","fa":"چشمانت را به سوی دانشی نو بگشای.","hint":"جمله‌ای ساده با «open» بسازید؛ مانند: I have a open. یا This open is good."},"qa":{"qEn":"How do you use the word 'open'?","qFa":"چگونه از کلمه «open» استفاده می‌کنی؟","aEn":"We use 'open' in everyday talk.","aFa":"ما از «open» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'open' had an important place. Everyone who spoke used 'open' with confidence.","fa":"در دهکده آرام کلمات، «open» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «open» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «open» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'open' one more time?","personAFa":"می‌توانی «open» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'open'.","personBFa":"بله، گوش کن: «open»."}}},{"id":71,"word":"close","phonetic":"/kloʊz/","meaning":"بستن / نزدیک","category":"حالت","emoji":"🔐","exercise":{"sentence":{"en":"Close the door before leaving.","fa":"قبل از رفتن در را ببند.","hint":"جمله‌ای ساده با «close» بسازید؛ مانند: I have a close. یا This close is good."},"qa":{"qEn":"How do you use the word 'close'?","qFa":"چگونه از کلمه «close» استفاده می‌کنی؟","aEn":"We use 'close' in everyday talk.","aFa":"ما از «close» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'close' had an important place. Everyone who spoke used 'close' with confidence.","fa":"در دهکده آرام کلمات، «close» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «close» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «close» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'close' one more time?","personAFa":"می‌توانی «close» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'close'.","personBFa":"بله، گوش کن: «close»."}}},{"id":72,"word":"in","phonetic":"/ɪn/","meaning":"در / داخل","category":"حروف اضافه","emoji":"📥","exercise":{"sentence":{"en":"The book is in my hand.","fa":"کتاب در دست من است.","hint":"جمله‌ای ساده با «in» بسازید؛ مانند: I have a in. یا This in is good."},"qa":{"qEn":"How do you use the word 'in'?","qFa":"چگونه از کلمه «in» استفاده می‌کنی؟","aEn":"We use 'in' in everyday talk.","aFa":"ما از «in» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'in' had an important place. Everyone who spoke used 'in' with confidence.","fa":"در دهکده آرام کلمات، «in» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «in» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «in» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'in' one more time?","personAFa":"می‌توانی «in» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'in'.","personBFa":"بله، گوش کن: «in»."}}},{"id":73,"word":"out","phonetic":"/aʊt/","meaning":"بیرون / خارج","category":"حروف اضافه","emoji":"📤","exercise":{"sentence":{"en":"Walk out into the fresh air.","fa":"به بیرون در هوای تازه قدم بگذار.","hint":"جمله‌ای ساده با «out» بسازید؛ مانند: I have a out. یا This out is good."},"qa":{"qEn":"How do you use the word 'out'?","qFa":"چگونه از کلمه «out» استفاده می‌کنی؟","aEn":"We use 'out' in everyday talk.","aFa":"ما از «out» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'out' had an important place. Everyone who spoke used 'out' with confidence.","fa":"در دهکده آرام کلمات، «out» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «out» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «out» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'out' one more time?","personAFa":"می‌توانی «out» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'out'.","personBFa":"بله، گوش کن: «out»."}}},{"id":74,"word":"on","phonetic":"/ɑːn/","meaning":"روی / بر فراز","category":"حروف اضافه","emoji":"🔛","exercise":{"sentence":{"en":"Put the cup on the table.","fa":"فنجان را روی میز بگذار.","hint":"جمله‌ای ساده با «on» بسازید؛ مانند: I have a on. یا This on is good."},"qa":{"qEn":"How do you use the word 'on'?","qFa":"چگونه از کلمه «on» استفاده می‌کنی؟","aEn":"We use 'on' in everyday talk.","aFa":"ما از «on» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'on' had an important place. Everyone who spoke used 'on' with confidence.","fa":"در دهکده آرام کلمات، «on» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «on» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «on» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'on' one more time?","personAFa":"می‌توانی «on» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'on'.","personBFa":"بله، گوش کن: «on»."}}},{"id":75,"word":"under","phonetic":"/ˈʌndər/","meaning":"زیر / پایین","category":"حروف اضافه","emoji":"👇","exercise":{"sentence":{"en":"The cat rests under the chair.","fa":"گربه زیر صندلی استراحت می‌کند.","hint":"جمله‌ای ساده با «under» بسازید؛ مانند: I have a under. یا This under is good."},"qa":{"qEn":"How do you use the word 'under'?","qFa":"چگونه از کلمه «under» استفاده می‌کنی؟","aEn":"We use 'under' in everyday talk.","aFa":"ما از «under» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'under' had an important place. Everyone who spoke used 'under' with confidence.","fa":"در دهکده آرام کلمات، «under» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «under» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «under» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'under' one more time?","personAFa":"می‌توانی «under» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'under'.","personBFa":"بله، گوش کن: «under»."}}},{"id":76,"word":"with","phonetic":"/wɪð/","meaning":"با / به همراه","category":"حروف اضافه","emoji":"🔗","exercise":{"sentence":{"en":"Come with me to study.","fa":"برای مطالعه با من بیا.","hint":"جمله‌ای ساده با «with» بسازید؛ مانند: I have a with. یا This with is good."},"qa":{"qEn":"How do you use the word 'with'?","qFa":"چگونه از کلمه «with» استفاده می‌کنی؟","aEn":"We use 'with' in everyday talk.","aFa":"ما از «with» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'with' had an important place. Everyone who spoke used 'with' with confidence.","fa":"در دهکده آرام کلمات، «with» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «with» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «with» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'with' one more time?","personAFa":"می‌توانی «with» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'with'.","personBFa":"بله، گوش کن: «with»."}}},{"id":77,"word":"from","phonetic":"/frʌm/","meaning":"از / مبدأ","category":"حروف اضافه","emoji":"🛫","exercise":{"sentence":{"en":"Start from the first word.","fa":"از نخستین کلمه آغاز کن.","hint":"جمله‌ای ساده با «from» بسازید؛ مانند: I have a from. یا This from is good."},"qa":{"qEn":"How do you use the word 'from'?","qFa":"چگونه از کلمه «from» استفاده می‌کنی؟","aEn":"We use 'from' in everyday talk.","aFa":"ما از «from» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'from' had an important place. Everyone who spoke used 'from' with confidence.","fa":"در دهکده آرام کلمات، «from» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «from» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «from» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'from' one more time?","personAFa":"می‌توانی «from» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'from'.","personBFa":"بله، گوش کن: «from»."}}},{"id":78,"word":"to","phonetic":"/tuː/","meaning":"به / به سوی","category":"حروف اضافه","emoji":"➡️","exercise":{"sentence":{"en":"Go to the next lesson.","fa":"به درس بعدی برو.","hint":"جمله‌ای ساده با «to» بسازید؛ مانند: I have a to. یا This to is good."},"qa":{"qEn":"How do you use the word 'to'?","qFa":"چگونه از کلمه «to» استفاده می‌کنی؟","aEn":"We use 'to' in everyday talk.","aFa":"ما از «to» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'to' had an important place. Everyone who spoke used 'to' with confidence.","fa":"در دهکده آرام کلمات، «to» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «to» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «to» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'to' one more time?","personAFa":"می‌توانی «to» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'to'.","personBFa":"بله، گوش کن: «to»."}}},{"id":79,"word":"up","phonetic":"/ʌp/","meaning":"بالا","category":"جهت‌ها","emoji":"⬆️","exercise":{"sentence":{"en":"Look up at the blue sky.","fa":"به آسمان آبی بالا بنگر.","hint":"جمله‌ای ساده با «up» بسازید؛ مانند: I have a up. یا This up is good."},"qa":{"qEn":"How do you use the word 'up'?","qFa":"چگونه از کلمه «up» استفاده می‌کنی؟","aEn":"We use 'up' in everyday talk.","aFa":"ما از «up» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'up' had an important place. Everyone who spoke used 'up' with confidence.","fa":"در دهکده آرام کلمات، «up» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «up» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «up» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'up' one more time?","personAFa":"می‌توانی «up» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'up'.","personBFa":"بله، گوش کن: «up»."}}},{"id":80,"word":"down","phonetic":"/daʊn/","meaning":"پایین","category":"جهت‌ها","emoji":"⬇️","exercise":{"sentence":{"en":"Sit down and take a rest.","fa":"بنشین و استراحت کن.","hint":"جمله‌ای ساده با «down» بسازید؛ مانند: I have a down. یا This down is good."},"qa":{"qEn":"How do you use the word 'down'?","qFa":"چگونه از کلمه «down» استفاده می‌کنی؟","aEn":"We use 'down' in everyday talk.","aFa":"ما از «down» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'down' had an important place. Everyone who spoke used 'down' with confidence.","fa":"در دهکده آرام کلمات، «down» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «down» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «down» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'down' one more time?","personAFa":"می‌توانی «down» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'down'.","personBFa":"بله، گوش کن: «down»."}}},{"id":81,"word":"before","phonetic":"/bɪˈfɔːr/","meaning":"قبل از / پیش از","category":"زمان","emoji":"⏮️","exercise":{"sentence":{"en":"Think before you speak.","fa":"قبل از سخن گفتن بیندیش.","hint":"جمله‌ای ساده با «before» بسازید؛ مانند: I have a before. یا This before is good."},"qa":{"qEn":"How do you use the word 'before'?","qFa":"چگونه از کلمه «before» استفاده می‌کنی؟","aEn":"We use 'before' in everyday talk.","aFa":"ما از «before» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'before' had an important place. Everyone who spoke used 'before' with confidence.","fa":"در دهکده آرام کلمات، «before» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «before» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «before» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'before' one more time?","personAFa":"می‌توانی «before» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'before'.","personBFa":"بله، گوش کن: «before»."}}},{"id":82,"word":"after","phonetic":"/ˈæftər/","meaning":"بعد از / پس از","category":"زمان","emoji":"⏭️","exercise":{"sentence":{"en":"Rest after your study time.","fa":"پس از زمان مطالعه‌ات استراحت کن.","hint":"جمله‌ای ساده با «after» بسازید؛ مانند: I have a after. یا This after is good."},"qa":{"qEn":"How do you use the word 'after'?","qFa":"چگونه از کلمه «after» استفاده می‌کنی؟","aEn":"We use 'after' in everyday talk.","aFa":"ما از «after» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'after' had an important place. Everyone who spoke used 'after' with confidence.","fa":"در دهکده آرام کلمات، «after» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «after» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «after» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'after' one more time?","personAFa":"می‌توانی «after» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'after'.","personBFa":"بله، گوش کن: «after»."}}},{"id":83,"word":"now","phonetic":"/naʊ/","meaning":"اکنون / حالا","category":"زمان","emoji":"⌛","exercise":{"sentence":{"en":"The best time to learn is now.","fa":"بهترین زمان برای آموختن هم‌اکنون است.","hint":"جمله‌ای ساده با «now» بسازید؛ مانند: I have a now. یا This now is good."},"qa":{"qEn":"How do you use the word 'now'?","qFa":"چگونه از کلمه «now» استفاده می‌کنی؟","aEn":"We use 'now' in everyday talk.","aFa":"ما از «now» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'now' had an important place. Everyone who spoke used 'now' with confidence.","fa":"در دهکده آرام کلمات، «now» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «now» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «now» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'now' one more time?","personAFa":"می‌توانی «now» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'now'.","personBFa":"بله، گوش کن: «now»."}}},{"id":84,"word":"then","phonetic":"/ðen/","meaning":"سپس / آنگاه","category":"زمان","emoji":"⏳","exercise":{"sentence":{"en":"First listen, then speak aloud.","fa":"نخست گوش بده، سپس بلند بگو.","hint":"جمله‌ای ساده با «then» بسازید؛ مانند: I have a then. یا This then is good."},"qa":{"qEn":"How do you use the word 'then'?","qFa":"چگونه از کلمه «then» استفاده می‌کنی؟","aEn":"We use 'then' in everyday talk.","aFa":"ما از «then» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'then' had an important place. Everyone who spoke used 'then' with confidence.","fa":"در دهکده آرام کلمات، «then» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «then» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «then» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'then' one more time?","personAFa":"می‌توانی «then» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'then'.","personBFa":"بله، گوش کن: «then»."}}},{"id":85,"word":"here","phonetic":"/hɪr/","meaning":"اینجا","category":"مکان","emoji":"📍","exercise":{"sentence":{"en":"We are here to learn together.","fa":"ما اینجا هستیم تا با هم بیاموزیم.","hint":"جمله‌ای ساده با «here» بسازید؛ مانند: I have a here. یا This here is good."},"qa":{"qEn":"How do you use the word 'here'?","qFa":"چگونه از کلمه «here» استفاده می‌کنی؟","aEn":"We use 'here' in everyday talk.","aFa":"ما از «here» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'here' had an important place. Everyone who spoke used 'here' with confidence.","fa":"در دهکده آرام کلمات، «here» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «here» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «here» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'here' one more time?","personAFa":"می‌توانی «here» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'here'.","personBFa":"بله، گوش کن: «here»."}}},{"id":86,"word":"there","phonetic":"/ðer/","meaning":"آنجا","category":"مکان","emoji":"👉","exercise":{"sentence":{"en":"Look over there at the mountain.","fa":"آن سو به کوهستان نگاه کن.","hint":"جمله‌ای ساده با «there» بسازید؛ مانند: I have a there. یا This there is good."},"qa":{"qEn":"How do you use the word 'there'?","qFa":"چگونه از کلمه «there» استفاده می‌کنی؟","aEn":"We use 'there' in everyday talk.","aFa":"ما از «there» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'there' had an important place. Everyone who spoke used 'there' with confidence.","fa":"در دهکده آرام کلمات، «there» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «there» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «there» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'there' one more time?","personAFa":"می‌توانی «there» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'there'.","personBFa":"بله، گوش کن: «there»."}}},{"id":87,"word":"all","phonetic":"/ɔːl/","meaning":"همه / تمام","category":"کمیت","emoji":"🌐","exercise":{"sentence":{"en":"All one hundred words are useful.","fa":"تمام صد کلمه کاربردی هستند.","hint":"جمله‌ای ساده با «all» بسازید؛ مانند: I have a all. یا This all is good."},"qa":{"qEn":"How do you use the word 'all'?","qFa":"چگونه از کلمه «all» استفاده می‌کنی؟","aEn":"We use 'all' in everyday talk.","aFa":"ما از «all» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'all' had an important place. Everyone who spoke used 'all' with confidence.","fa":"در دهکده آرام کلمات، «all» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «all» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «all» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'all' one more time?","personAFa":"می‌توانی «all» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'all'.","personBFa":"بله، گوش کن: «all»."}}},{"id":88,"word":"some","phonetic":"/sʌm/","meaning":"مقداری / برخی","category":"کمیت","emoji":"⚖️","exercise":{"sentence":{"en":"Give me some clean water.","fa":"مقداری آب تمیز به من بده.","hint":"جمله‌ای ساده با «some» بسازید؛ مانند: I have a some. یا This some is good."},"qa":{"qEn":"How do you use the word 'some'?","qFa":"چگونه از کلمه «some» استفاده می‌کنی؟","aEn":"We use 'some' in everyday talk.","aFa":"ما از «some» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'some' had an important place. Everyone who spoke used 'some' with confidence.","fa":"در دهکده آرام کلمات، «some» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «some» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «some» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'some' one more time?","personAFa":"می‌توانی «some» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'some'.","personBFa":"بله، گوش کن: «some»."}}},{"id":89,"word":"no","phonetic":"/noʊ/","meaning":"نه / هیچ","category":"منفی","emoji":"🚫","exercise":{"sentence":{"en":"No task is hard with patience.","fa":"هیچ کاری با بردباری سخت نیست.","hint":"جمله‌ای ساده با «no» بسازید؛ مانند: I have a no. یا This no is good."},"qa":{"qEn":"How do you use the word 'no'?","qFa":"چگونه از کلمه «no» استفاده می‌کنی؟","aEn":"We use 'no' in everyday talk.","aFa":"ما از «no» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'no' had an important place. Everyone who spoke used 'no' with confidence.","fa":"در دهکده آرام کلمات، «no» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «no» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «no» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'no' one more time?","personAFa":"می‌توانی «no» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'no'.","personBFa":"بله، گوش کن: «no»."}}},{"id":90,"word":"yes","phonetic":"/jes/","meaning":"بله / آری","category":"مثبت","emoji":"✅","exercise":{"sentence":{"en":"Yes, you can speak English.","fa":"بله، تو می‌توانی انگلیسی صحبت کنی.","hint":"جمله‌ای ساده با «yes» بسازید؛ مانند: I have a yes. یا This yes is good."},"qa":{"qEn":"How do you use the word 'yes'?","qFa":"چگونه از کلمه «yes» استفاده می‌کنی؟","aEn":"We use 'yes' in everyday talk.","aFa":"ما از «yes» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'yes' had an important place. Everyone who spoke used 'yes' with confidence.","fa":"در دهکده آرام کلمات، «yes» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «yes» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «yes» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'yes' one more time?","personAFa":"می‌توانی «yes» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'yes'.","personBFa":"بله، گوش کن: «yes»."}}},{"id":91,"word":"small","phonetic":"/smɔːl/","meaning":"کوچک","category":"اندازه","emoji":"🔹","exercise":{"sentence":{"en":"A small word has great power.","fa":"کلمه‌ای کوچک قدرتی بزرگ دارد.","hint":"جمله‌ای ساده با «small» بسازید؛ مانند: I have a small. یا This small is good."},"qa":{"qEn":"How do you use the word 'small'?","qFa":"چگونه از کلمه «small» استفاده می‌کنی؟","aEn":"We use 'small' in everyday talk.","aFa":"ما از «small» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'small' had an important place. Everyone who spoke used 'small' with confidence.","fa":"در دهکده آرام کلمات، «small» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «small» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «small» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'small' one more time?","personAFa":"می‌توانی «small» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'small'.","personBFa":"بله، گوش کن: «small»."}}},{"id":92,"word":"big","phonetic":"/bɪɡ/","meaning":"بزرگ","category":"اندازه","emoji":"🔷","exercise":{"sentence":{"en":"This house has a big window.","fa":"این خانه پنجره‌ای بزرگ دارد.","hint":"جمله‌ای ساده با «big» بسازید؛ مانند: I have a big. یا This big is good."},"qa":{"qEn":"How do you use the word 'big'?","qFa":"چگونه از کلمه «big» استفاده می‌کنی؟","aEn":"We use 'big' in everyday talk.","aFa":"ما از «big» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'big' had an important place. Everyone who spoke used 'big' with confidence.","fa":"در دهکده آرام کلمات، «big» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «big» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «big» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'big' one more time?","personAFa":"می‌توانی «big» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'big'.","personBFa":"بله، گوش کن: «big»."}}},{"id":93,"word":"long","phonetic":"/lɔːŋ/","meaning":"طولانی / دراز","category":"اندازه","emoji":"📏","exercise":{"sentence":{"en":"A long journey begins with a step.","fa":"سفری دراز با یک گام آغاز می‌شود.","hint":"جمله‌ای ساده با «long» بسازید؛ مانند: I have a long. یا This long is good."},"qa":{"qEn":"How do you use the word 'long'?","qFa":"چگونه از کلمه «long» استفاده می‌کنی؟","aEn":"We use 'long' in everyday talk.","aFa":"ما از «long» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'long' had an important place. Everyone who spoke used 'long' with confidence.","fa":"در دهکده آرام کلمات، «long» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «long» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «long» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'long' one more time?","personAFa":"می‌توانی «long» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'long'.","personBFa":"بله، گوش کن: «long»."}}},{"id":94,"word":"short","phonetic":"/ʃɔːrt/","meaning":"کوتاه","category":"اندازه","emoji":"📐","exercise":{"sentence":{"en":"Make short and clear sentences.","fa":"جملاتی کوتاه و روشن بساز.","hint":"جمله‌ای ساده با «short» بسازید؛ مانند: I have a short. یا This short is good."},"qa":{"qEn":"How do you use the word 'short'?","qFa":"چگونه از کلمه «short» استفاده می‌کنی؟","aEn":"We use 'short' in everyday talk.","aFa":"ما از «short» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'short' had an important place. Everyone who spoke used 'short' with confidence.","fa":"در دهکده آرام کلمات، «short» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «short» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «short» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'short' one more time?","personAFa":"می‌توانی «short» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'short'.","personBFa":"بله، گوش کن: «short»."}}},{"id":95,"word":"fast","phonetic":"/fæst/","meaning":"سریع / تند","category":"سرعت","emoji":"⚡","exercise":{"sentence":{"en":"Do not go too fast, stay steady.","fa":"بیش از حد سریع مرو، پیوسته بمان.","hint":"جمله‌ای ساده با «fast» بسازید؛ مانند: I have a fast. یا This fast is good."},"qa":{"qEn":"How do you use the word 'fast'?","qFa":"چگونه از کلمه «fast» استفاده می‌کنی؟","aEn":"We use 'fast' in everyday talk.","aFa":"ما از «fast» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'fast' had an important place. Everyone who spoke used 'fast' with confidence.","fa":"در دهکده آرام کلمات، «fast» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «fast» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «fast» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'fast' one more time?","personAFa":"می‌توانی «fast» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'fast'.","personBFa":"بله، گوش کن: «fast»."}}},{"id":96,"word":"slow","phonetic":"/sloʊ/","meaning":"آرام / آهسته","category":"سرعت","emoji":"🐢","exercise":{"sentence":{"en":"Slow learning builds strong roots.","fa":"یادگیری آرام ریشه‌هایی نیرومند می‌سازد.","hint":"جمله‌ای ساده با «slow» بسازید؛ مانند: I have a slow. یا This slow is good."},"qa":{"qEn":"How do you use the word 'slow'?","qFa":"چگونه از کلمه «slow» استفاده می‌کنی؟","aEn":"We use 'slow' in everyday talk.","aFa":"ما از «slow» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'slow' had an important place. Everyone who spoke used 'slow' with confidence.","fa":"در دهکده آرام کلمات، «slow» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «slow» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «slow» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'slow' one more time?","personAFa":"می‌توانی «slow» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'slow'.","personBFa":"بله، گوش کن: «slow»."}}},{"id":97,"word":"easy","phonetic":"/ˈiːzi/","meaning":"آسان / راحت","category":"کیفیت","emoji":"✨","exercise":{"sentence":{"en":"English is easy with Ogden.","fa":"انگلیسی با آگدن آسان است.","hint":"جمله‌ای ساده با «easy» بسازید؛ مانند: I have a easy. یا This easy is good."},"qa":{"qEn":"How do you use the word 'easy'?","qFa":"چگونه از کلمه «easy» استفاده می‌کنی؟","aEn":"We use 'easy' in everyday talk.","aFa":"ما از «easy» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'easy' had an important place. Everyone who spoke used 'easy' with confidence.","fa":"در دهکده آرام کلمات، «easy» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «easy» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «easy» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'easy' one more time?","personAFa":"می‌توانی «easy» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'easy'.","personBFa":"بله، گوش کن: «easy»."}}},{"id":98,"word":"hard","phonetic":"/hɑːrd/","meaning":"سخت / کوشا","category":"کیفیت","emoji":"🧗","exercise":{"sentence":{"en":"Work hard and believe in yourself.","fa":"سخت بکوش و به خودت باور داشته باش.","hint":"جمله‌ای ساده با «hard» بسازید؛ مانند: I have a hard. یا This hard is good."},"qa":{"qEn":"How do you use the word 'hard'?","qFa":"چگونه از کلمه «hard» استفاده می‌کنی؟","aEn":"We use 'hard' in everyday talk.","aFa":"ما از «hard» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'hard' had an important place. Everyone who spoke used 'hard' with confidence.","fa":"در دهکده آرام کلمات، «hard» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «hard» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «hard» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'hard' one more time?","personAFa":"می‌توانی «hard» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'hard'.","personBFa":"بله، گوش کن: «hard»."}}},{"id":99,"word":"true","phonetic":"/truː/","meaning":"درست / واقعی","category":"حقیقت","emoji":"💎","exercise":{"sentence":{"en":"Speak words that are true and kind.","fa":"کلماتی بگو که راستین و مهربان باشند.","hint":"جمله‌ای ساده با «true» بسازید؛ مانند: I have a true. یا This true is good."},"qa":{"qEn":"How do you use the word 'true'?","qFa":"چگونه از کلمه «true» استفاده می‌کنی؟","aEn":"We use 'true' in everyday talk.","aFa":"ما از «true» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'true' had an important place. Everyone who spoke used 'true' with confidence.","fa":"در دهکده آرام کلمات، «true» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «true» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «true» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'true' one more time?","personAFa":"می‌توانی «true» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'true'.","personBFa":"بله، گوش کن: «true»."}}},{"id":100,"word":"simple","phonetic":"/ˈsɪmpl/","meaning":"ساده / بی‌پیرایه","category":"روش آگدن","emoji":"🎯","exercise":{"sentence":{"en":"Simple words unlock the world.","fa":"کلمات ساده کلید گشودن جهانند.","hint":"جمله‌ای ساده با «simple» بسازید؛ مانند: I have a simple. یا This simple is good."},"qa":{"qEn":"How do you use the word 'simple'?","qFa":"چگونه از کلمه «simple» استفاده می‌کنی؟","aEn":"We use 'simple' in everyday talk.","aFa":"ما از «simple» در مکالمات روزمره استفاده می‌کنیم."},"story":{"en":"In the quiet village of words, 'simple' had an important place. Everyone who spoke used 'simple' with confidence.","fa":"در دهکده آرام کلمات، «simple» جایگاهی مهم داشت. هر کس سخن می‌گفت با اعتمادبه‌نفس از «simple» استفاده می‌کرد.","hint":"داستانی دو جمله‌ای بنویسید که کلمه «simple» در آن نقشی کلیدی داشته باشد."},"dialogue":{"personA":"Can you say 'simple' one more time?","personAFa":"می‌توانی «simple» را یک بار دیگر بگویی؟","personB":"Yes, listen: 'simple'.","personBFa":"بله، گوش کن: «simple»."}}}];
+    let currentIndex = 0;
+    let currentTab = 0;
+    let todayLearnedCount = 1;
+    let todayGoal = 10;
+    let completedWords = new Set();
+    let scrollTimer = null;
+
+    function getSession() {
+      try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); }
+      catch (e) { return null; }
+    }
+
+    function isLoggedIn() {
+      const s = getSession();
+      return !!(s && s.phone && s.verified);
+    }
+
+    function renderAuthBadge() {
+      const badge = document.getElementById('authBadge');
+      if (isLoggedIn()) {
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    function openSubscriptionModal(customPrompt) {
+      const modal = document.getElementById('subscriptionModal');
+      const notLoggedInView = document.getElementById('subModalNotLoggedIn');
+      const loggedInView = document.getElementById('subModalLoggedIn');
+      const err = document.getElementById('subErrorMsg');
+      const succ = document.getElementById('subSuccessMsg');
+      err.classList.add('hidden');
+      succ.classList.add('hidden');
+
+      if (customPrompt) {
+        document.getElementById('subModalPromptText').innerText = customPrompt;
+      }
+
+      if (isLoggedIn()) {
+        notLoggedInView.classList.add('hidden');
+        loggedInView.classList.remove('hidden');
+        document.getElementById('userPhoneDisplay').innerText = getSession().phone;
+      } else {
+        notLoggedInView.classList.remove('hidden');
+        loggedInView.classList.add('hidden');
+        document.getElementById('subCodeInput').value = '';
+      }
+      modal.classList.remove('hidden');
+    }
+
+    function closeSubscriptionModal() {
+      document.getElementById('subscriptionModal').classList.add('hidden');
+    }
+
+    async function handleCodeSubmit(e) {
+      e.preventDefault();
+      const codeInput = document.getElementById('subCodeInput');
+      const code = (codeInput.value || '').trim();
+      const err = document.getElementById('subErrorMsg');
+      const succ = document.getElementById('subSuccessMsg');
+      const btn = document.getElementById('subSubmitBtn');
+
+      err.classList.add('hidden');
+      succ.classList.add('hidden');
+
+      if (!code) {
+        err.innerText = 'لطفاً کد اشتراک ۵ رقمی را وارد کنید.';
+        err.classList.remove('hidden');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerText = 'در حال بررسی...';
+
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/subscriptions?phone=eq.${encodeURIComponent(code)}&is_active=eq.true&limit=1`,
+          {
+            headers: {
+              'apikey': SUPABASE_KEY,
+              'Authorization': 'Bearer ' + SUPABASE_KEY
+            }
+          }
+        );
+        btn.disabled = false;
+        btn.innerText = 'فعال‌سازی و ادامه یادگیری';
+
+        if (!res.ok) {
+          err.innerText = 'خطا در ارتباط با سرور.';
+          err.classList.remove('hidden');
+          return;
+        }
+
+        const data = await res.json();
+        if (!Array.isArray(data) || data.length === 0) {
+          err.innerText = 'کد اشتراک نامعتبر است یا اشتراک شما فعال نیست.';
+          err.classList.remove('hidden');
+          return;
+        }
+
+        localStorage.setItem(SESSION_KEY, JSON.stringify({ phone: code, verified: true, loginAt: Date.now() }));
+        succ.innerText = 'اشتراک شما با موفقیت تأیید شد!';
+        succ.classList.remove('hidden');
+        renderAuthBadge();
+
+        setTimeout(() => {
+          closeSubscriptionModal();
+          if (currentIndex === 9) {
+            goToWord(10);
+          }
+        }, 1000);
+
+      } catch (ex) {
+        btn.disabled = false;
+        btn.innerText = 'فعال‌سازی و ادامه یادگیری';
+        err.innerText = 'خطا در بررسی اتصال اینترنت.';
+        err.classList.remove('hidden');
+      }
+    }
+
+    function handleLogout() {
+      localStorage.removeItem(SESSION_KEY);
+      renderAuthBadge();
+      closeSubscriptionModal();
+      if (currentIndex >= 10) {
+        goToWord(0);
+      }
+    }
+
+    function renderCurrentWord() {
+      const w = words[currentIndex];
+      document.getElementById('currentWordIdxText').innerText = w.id;
+      document.getElementById('wordCategoryBadge').innerText = w.category;
+      document.getElementById('wordTitle').innerText = w.word;
+      document.getElementById('wordPhonetic').innerText = w.phonetic;
+      document.getElementById('wordMeaning').innerText = w.meaning;
+      document.getElementById('wordEmoji').innerText = w.emoji || '📖';
+
+      // Update Exercise Models
+      if (w.exercise) {
+        document.getElementById('modelSentenceEn').innerText = w.exercise.sentence ? w.exercise.sentence.en : '';
+        document.getElementById('modelSentenceFa').innerText = w.exercise.sentence ? w.exercise.sentence.fa : '';
+        document.getElementById('modelQEn').innerText = w.exercise.qa ? 'Q: ' + w.exercise.qa.qEn : '';
+        document.getElementById('modelQFa').innerText = w.exercise.qa ? w.exercise.qa.qFa : '';
+        document.getElementById('modelAEn').innerText = w.exercise.qa ? 'A: ' + w.exercise.qa.aEn : '';
+        document.getElementById('modelAFa').innerText = w.exercise.qa ? w.exercise.qa.aFa : '';
+        document.getElementById('modelStoryEn').innerText = w.exercise.story ? w.exercise.story.en : '';
+        document.getElementById('modelStoryFa').innerText = w.exercise.story ? w.exercise.story.fa : '';
+        document.getElementById('modelDiaA').innerText = w.exercise.dialogue ? 'A: ' + w.exercise.dialogue.personA : '';
+        document.getElementById('modelDiaAFa').innerText = w.exercise.dialogue ? w.exercise.dialogue.personAFa : '';
+        document.getElementById('modelDiaB').innerText = w.exercise.dialogue ? 'B: ' + w.exercise.dialogue.personB : '';
+        document.getElementById('modelDiaBFa').innerText = w.exercise.dialogue ? w.exercise.dialogue.personBFa : '';
+      }
+
+      // Track completed
+      completedWords.add(w.id);
+      document.getElementById('totalLearnedCount').innerText = completedWords.size;
+
+      // Update today goal
+      todayLearnedCount = Math.min(todayGoal, Math.max(1, (completedWords.size % todayGoal) || (completedWords.size > 0 ? todayGoal : 1)));
+      document.getElementById('todayProgressText').innerText = todayLearnedCount + ' از ' + todayGoal;
+      const progressPercent = Math.min(100, Math.round((todayLearnedCount / todayGoal) * 100));
+      document.getElementById('todayProgressBar').style.width = progressPercent + '%';
+
+      if (todayLearnedCount >= 10 && todayGoal <= 10) {
+        document.getElementById('todayCompletionPrompt').classList.remove('hidden');
+      } else {
+        document.getElementById('todayCompletionPrompt').classList.add('hidden');
+      }
+
+      // Hide all exercise feedback
+      ['sentence', 'qa', 'story', 'dialogue'].forEach(k => {
+        const el = document.getElementById('feedback-' + k);
+        if (el) el.classList.add('hidden');
+      });
+
+      // Animate card
+      const wrapper = document.getElementById('wordCardWrapper');
+      wrapper.classList.remove('word-slide-enter');
+      void wrapper.offsetWidth;
+      wrapper.classList.add('word-slide-enter');
+    }
+
+    function handleContinueToday(choice) {
+      if (choice === 'yes') {
+        todayGoal += 10;
+        document.getElementById('todayCompletionPrompt').classList.add('hidden');
+        handleNextWord();
+      } else {
+        document.getElementById('todayCompletionPrompt').classList.add('hidden');
+      }
+    }
+
+    function handleNextWord() {
+      // Free tier check: words 0..9 (first 10) are free
+      if (currentIndex === 9 && !isLoggedIn()) {
+        openSubscriptionModal('۱۰ لغت اول رایگان را با موفقیت تمام کردید! برای باز شدن دسترسی به لغت‌های ۱۱ تا ۱۰۰، لطفاً کد اشتراک ۵ رقمی خود را وارد کنید.');
+        return;
+      }
+
+      if (currentIndex < words.length - 1) {
+        goToWord(currentIndex + 1);
+
+        // Auto-scroll 160px after 2 seconds
+        if (scrollTimer) clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(() => {
+          const windowHeight = window.innerHeight;
+          const scrollY = window.scrollY || document.documentElement.scrollTop;
+          const totalHeight = document.documentElement.scrollHeight;
+          const isAtBottom = (windowHeight + scrollY) >= (totalHeight - 50);
+
+          if (!isAtBottom) {
+            window.scrollBy({ top: 160, behavior: 'smooth' });
+          }
+
+          // Show floating prompt
+          const toast = document.getElementById('practiceToast');
+          toast.classList.remove('hidden');
+          setTimeout(() => { toast.classList.add('hidden'); }, 3500);
+        }, 2000);
+      }
+    }
+
+    function handlePrevWord() {
+      if (currentIndex > 0) {
+        goToWord(currentIndex - 1);
+      }
+    }
+
+    function goToWord(idx) {
+      if (idx >= 10 && !isLoggedIn()) {
+        openSubscriptionModal('تمرین‌های رایگان ۱۰ لغت اول به پایان رسید. برای باز شدن دسترسی به ادامه، لطفاً کد اشتراک ۵ رقمی خود را وارد کنید.');
+        return;
+      }
+      currentIndex = idx;
+      renderCurrentWord();
+      selectExerciseTab(0);
+      closeWordDirectory();
+    }
+
+    function selectExerciseTab(tabIdx) {
+      currentTab = tabIdx;
+      for (let i = 0; i < 4; i++) {
+        const pane = document.getElementById('exercisePane-' + i);
+        const tabBtn = document.getElementById('tab-' + i);
+        if (pane && tabBtn) {
+          if (i === tabIdx) {
+            pane.classList.remove('hidden');
+            tabBtn.className = 'flex-1 py-2 px-2 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap text-center bg-white text-blue-700 shadow-md border-b-2 border-blue-600';
+          } else {
+            pane.classList.add('hidden');
+            tabBtn.className = 'flex-1 py-2 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap text-center bg-white/70 text-slate-600 hover:bg-white';
+          }
+        }
+      }
+    }
+
+    function handleSubmitAnswer(type, currentTabIndex) {
+      const fb = document.getElementById('feedback-' + type);
+      if (fb) fb.classList.remove('hidden');
+
+      // Auto progression to next tab after submit
+      setTimeout(() => {
+        if (currentTabIndex < 3) {
+          selectExerciseTab(currentTabIndex + 1);
+        }
+      }, 700);
+    }
+
+    function toggleModelAnswer(type) {
+      const el = document.getElementById('model-' + type);
+      if (el) el.classList.toggle('hidden');
+    }
+
+    function speakCurrentWord() {
+      speakEnglish(words[currentIndex].word);
+    }
+
+    function speakSentenceModel() {
+      const w = words[currentIndex];
+      if (w.exercise && w.exercise.sentence) {
+        speakEnglish(w.exercise.sentence.en);
+      }
+    }
+
+    function speakEnglish(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'en-US';
+        u.rate = 0.9;
+        window.speechSynthesis.speak(u);
+      }
+    }
+
+    function toggleWordDirectory() {
+      const modal = document.getElementById('wordDirectoryModal');
+      modal.classList.toggle('hidden');
+      if (!modal.classList.contains('hidden')) {
+        renderDirectoryList();
+      }
+    }
+
+    function closeWordDirectory() {
+      document.getElementById('wordDirectoryModal').classList.add('hidden');
+    }
+
+    function renderDirectoryList() {
+      const container = document.getElementById('directoryWordsList');
+      const isUserAuth = isLoggedIn();
+      container.innerHTML = words.map((w, idx) => {
+        const isLocked = idx >= 10 && !isUserAuth;
+        const isActive = idx === currentIndex;
+        return `
+          <div onclick="goToWord(${idx})" class="p-3 flex items-center justify-between hover:bg-slate-50 cursor-pointer rounded-xl transition ${isActive ? 'bg-blue-50 border border-blue-200' : ''} ${isLocked ? 'opacity-60' : ''}">
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-xs font-en font-bold">${w.id}</span>
+              <div class="text-right">
+                <span class="font-bold text-slate-800 font-en text-sm">${w.word}</span>
+                <span class="text-xs text-slate-400 font-en mr-1">${w.phonetic}</span>
+                <div class="text-xs text-slate-500 mt-0.5">${w.meaning}</div>
+              </div>
+            </div>
+            <div>
+              ${isLocked ? '<span class="text-xs text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md font-bold">🔒 قفل</span>' : '<span class="text-[10px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full font-medium">' + w.category + '</span>'}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Init App
+    renderAuthBadge();
+    renderCurrentWord();
+  </script>
+</body>
+</html>
